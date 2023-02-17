@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>924546828093-0kp23muiif81ae0pbuh2r6pf1mg50dua.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.924546828093-0kp23muiif81ae0pbuh2r6pf1mg50dua</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>924546828093-vstravs2j30im2noe6q5k326o19n7tqe.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAYLt_MhdySAWZsriiD4kjNA_nxU2_fRnE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>924546828093</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.trabendo</string>
+	<key>PROJECT_ID</key>
+	<string>trabendo-a7432</string>
+	<key>STORAGE_BUCKET</key>
+	<string>trabendo-a7432.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:924546828093:ios:158f1d37aab83eeffbe754</string>
+</dict>
+</plist>

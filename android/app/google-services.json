@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "924546828093",
+    "project_id": "trabendo-a7432",
+    "storage_bucket": "trabendo-a7432.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924546828093:android:21ce1b07361965a7fbe754",
+        "android_client_info": {
+          "package_name": "com.example.trabendo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924546828093-vstravs2j30im2noe6q5k326o19n7tqe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trabendo",
+            "certificate_hash": "bd1b7dbd8ac5b143da4e13ea45c8e03fae4ac8b8"
+          }
+        },
+        {
+          "client_id": "924546828093-d4s8v15khsi1fjh23976ft1r32comc3s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWYprjVRLe4Bv7OzgIshcNGZGa4YKNinA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924546828093-d4s8v15khsi1fjh23976ft1r32comc3s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
