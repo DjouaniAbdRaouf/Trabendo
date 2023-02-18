@@ -54,7 +54,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ? TextButton(
                     onPressed: () {
                       Navigator.pushReplacementNamed(
-                          context, RouteManager.loginScreen);
+                          context, RouteManager.homeScreen);
                     },
                     child: Text(
                       "Commencer",

@@ -1,13 +1,25 @@
-// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 
-class PhoneNumberScreen extends StatelessWidget {
+class PhoneNumberScreen extends StatefulWidget {
   const PhoneNumberScreen({super.key});
+
+  @override
+  State<PhoneNumberScreen> createState() => _PhoneNumberScreenState();
+}
+
+class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
+  TextEditingController textEditingController = TextEditingController();
+
+  String? phoneNumber;
+
+  String codeCountry = "+213";
 
   Widget _buidTextIntro() {
     return Column(
@@ -41,6 +53,7 @@ class PhoneNumberScreen extends StatelessWidget {
                   color: Colors.white, borderRadius: BorderRadius.circular(15)),
               height: 70,
               child: IntlPhoneField(
+                controller: textEditingController,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                     suffixIcon: Icon(
@@ -76,6 +89,15 @@ class PhoneNumberScreen extends StatelessWidget {
                     labelText: "Numéro de Téléphone"),
                 initialCountryCode: 'DZ',
                 onChanged: (phone) {},
+                onSubmitted: (p0) {
+                  print("submitted number $p0");
+                  phoneNumber = "$codeCountry $p0";
+                  print(phoneNumber);
+                },
+                onCountryChanged: (value) {
+                  print("country        ${value.code}   ${value.dialCode}");
+                  codeCountry = "+${value.dialCode}";
+                },
               ),
             ))
       ],
@@ -114,8 +136,9 @@ class PhoneNumberScreen extends StatelessWidget {
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 16)),
                       onPressed: () {
-                        Navigator.pushNamed(
-                            context, RouteManager.phoneVerification);
+                        AuthServices().verifyNumber(phonenumber: phoneNumber!);
+                        // Navigator.pushNamed(
+                        //     context, RouteManager.phoneVerification);
                       },
                       child: Text(
                         "Suivant",

@@ -40,15 +40,16 @@ class HomeScreen extends StatelessWidget {
             child: InkWell(
               onTap: () => Get.to(() => AccountInformation()),
               child: Container(
-                height: 60,
-                width: 60,
+                padding: EdgeInsets.all(5),
+                height: 70,
+                width: 70,
                 decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey),
                     shape: BoxShape.circle,
                     color: Colors.transparent,
                     image: DecorationImage(
-                        image: NetworkImage(
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2TGo6LoQxlQJw7jiBHNiG6lKiAoz62TeCzQ&usqp=CAU"),
-                        fit: BoxFit.cover,
+                        image: AssetImage(ImageManager.avatar),
+                        fit: BoxFit.contain,
                         filterQuality: FilterQuality.high)),
               ),
             ),
@@ -202,7 +203,7 @@ class HomeScreen extends StatelessWidget {
           ItemCard(),
           ItemCard(
             path:
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmTyPEDRuTrqn7-25kYDawYV3onCL8lDcXCQ&usqp=CAU",
+                "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/96c9b545-8616-4617-a6c9-9ef3781543b8/survetement-nba-brooklyn-nets-courtside-pour-jHNPvz.png",
           ),
           ItemCard(),
           ItemCard(),
@@ -303,7 +304,7 @@ class BottomNavBar extends StatelessWidget {
         const HomeScreen(),
         const FavoriteScreen(),
         const MyProductScreen(),
-        const AccountInformation(),
+        SettingScreen(),
       ];
     }
 

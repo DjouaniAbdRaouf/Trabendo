@@ -8,6 +8,7 @@ import 'package:trabendo/models/user_model.dart';
 
 class UserController extends GetxController {
   var currentUserModel = Rxn<UserModel>();
+  RxBool isSignIn = false.obs;
   late SharedPreferences sharedPreferences;
   @override
   void onInit() async {
@@ -31,5 +32,6 @@ class UserController extends GetxController {
 
   void removeData() async {
     await sharedPreferences.remove("userdata");
+    isSignIn.value = false;
   }
 }

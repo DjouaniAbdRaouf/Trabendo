@@ -50,26 +50,31 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(
                     height: PaddingManager.kheight / 2,
                   ),
-                  TextFormField(
-                    controller: email,
-                    validator: (val) {
-                      if (val == "") {
-                        return "Champ Obligatoire";
-                      }
-                      if (!AuthServices().validateEmail(val!)) {
-                        return "Email non Valide";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.email_rounded,
-                          color: ColorManager.primaryColor,
-                          size: 26,
-                        ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        labelText: "Entrer votre Email"),
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.grey.shade100),
+                    child: TextFormField(
+                      controller: email,
+                      validator: (val) {
+                        if (val == "") {
+                          return "Champ Obligatoire";
+                        }
+                        // if (!AuthServices().validateEmail(val!)) {
+                        //   return "Email non Valide";
+                        // }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.email_rounded,
+                            color: ColorManager.primaryColor,
+                            size: 26,
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          labelText: "Entrer votre Email"),
+                    ),
                   ),
 
                   // TextFormGest(
@@ -93,9 +98,11 @@ class RegisterScreen extends StatelessWidget {
                   TextFormGest(
                       colorFill: Colors.grey.shade100,
                       controller: firstname,
+                      coloprefix: ColorManager.primaryColor,
                       errormessage: "Champs Obligatoire",
-                      icon: Icons.email,
+                      icon: Icons.person,
                       suffixIcon: Icons.admin_panel_settings,
+                      colosuffixIcon: Colors.transparent,
                       hinttext: "Entrer votre Nom"),
                   SizedBox(
                     height: PaddingManager.kheight,
@@ -112,8 +119,10 @@ class RegisterScreen extends StatelessWidget {
                       colorFill: Colors.grey.shade100,
                       controller: lastName,
                       errormessage: "Champs Obligatoire",
-                      icon: Icons.email,
+                      icon: Icons.person,
+                      coloprefix: ColorManager.primaryColor,
                       suffixIcon: Icons.admin_panel_settings,
+                      colosuffixIcon: Colors.transparent,
                       hinttext: "Entrer votre Prenom"),
                   SizedBox(
                     height: PaddingManager.kheight,
@@ -125,13 +134,38 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(
                     height: PaddingManager.kheight / 2,
                   ),
-                  TextFormGest(
-                      colorFill: Colors.grey.shade100,
-                      suffixIcon: Icons.password,
-                      controller: password,
-                      errormessage: "Champs Obligatoire",
-                      icon: Icons.email,
-                      hinttext: "Entrer votre Mot de Passe"),
+                  Obx(() => Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.grey.shade100),
+                        child: TextFormField(
+                          controller: password,
+                          validator: (val) {
+                            if (val == "") {
+                              return "Champ Obligatoire";
+                            }
+                          },
+                          obscureText: authController.isloadingSignup.value,
+                          decoration: InputDecoration(
+                              suffixIcon: InkWell(
+                                  onTap: () {
+                                    authController.isloadingSignup.value =
+                                        !authController.isloadingSignup.value;
+                                  },
+                                  child: Icon(
+                                      authController.isloadingSignup.value
+                                          ? Icons.visibility
+                                          : Icons.visibility_off)),
+                              prefixIcon: Icon(
+                                Icons.password,
+                                color: ColorManager.primaryColor,
+                                size: 26,
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              labelText: "Mot de Passe"),
+                        ),
+                      )),
 
                   SizedBox(
                     height: PaddingManager.kheight,
@@ -165,6 +199,8 @@ class RegisterScreen extends StatelessWidget {
                                   title: "Inscription réussite",
                                   message:
                                       "vous pouvez maintenant confimer l'inscription par numero de telephone");
+                              userController.isSignIn.value = true;
+
                               Navigator.pushReplacementNamed(
                                   context, RouteManager.homeScreen);
                             } else {

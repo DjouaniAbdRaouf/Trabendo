@@ -1,10 +1,12 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, file_names, no_leading_underscores_for_local_identifiers, unused_element
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/themes.dart';
 
 class DetailProductScreen extends StatelessWidget {
-  const DetailProductScreen({super.key});
+  DetailProductScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class DetailProductScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                     image: NetworkImage(
-                      "https://photos6.spartoo.com/photos/229/22977049/22977049_350_B.jpg",
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5P9P9Xw9sxsfzf1holi2LIB5n0B64joWcdw&usqp=CAU",
                     ),
                     fit: BoxFit.cover,
                     filterQuality: FilterQuality.high),

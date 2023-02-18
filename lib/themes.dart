@@ -19,10 +19,12 @@ class ImageManager {
   static String phoneIcons = "assets/icons/phoneNumber.svg";
   static String phoneLottie = "assets/Lottie/phoneNumber.json";
   static String loadingLottie = "assets/Lottie/loading.json";
+  static String horligneprofile = "assets/Lottie/horligneprofile.json";
   static String technology = "assets/icons/technology.png";
   static String beauty = "assets/icons/beauty.png";
   static String health = "assets/icons/health.png";
   static String sports = "assets/icons/sport.png";
+  static String avatar = "assets/images/avatar.png";
 }
 
 class PaddingManager {

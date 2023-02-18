@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:trabendo/controllers/authController.dart';
+import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
 import 'package:trabendo/services/userservicesDB.dart';
@@ -20,6 +21,7 @@ class LoginScreen extends StatelessWidget {
   TextEditingController password = TextEditingController();
   GlobalKey<FormState> globalKey = GlobalKey();
   AuthController authController = Get.put(AuthController());
+  UserController userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
@@ -62,31 +64,36 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     height: PaddingManager.kheight / 2,
                   ),
-                  Obx(() => TextFormField(
-                        controller: password,
-                        validator: (val) {
-                          if (val == "") {
-                            return "Champ Obligatoire";
-                          }
-                        },
-                        obscureText: authController.passVisible.value,
-                        decoration: InputDecoration(
-                            suffixIcon: InkWell(
-                                onTap: () {
-                                  authController.passVisible.value =
-                                      !authController.passVisible.value;
-                                },
-                                child: Icon(authController.passVisible.value
-                                    ? Icons.visibility
-                                    : Icons.visibility_off)),
-                            prefixIcon: Icon(
-                              Icons.password,
-                              color: ColorManager.primaryColor,
-                              size: 26,
-                            ),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            labelText: "Mot de Passe"),
+                  Obx(() => Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.grey.shade100),
+                        child: TextFormField(
+                          controller: password,
+                          validator: (val) {
+                            if (val == "") {
+                              return "Champ Obligatoire";
+                            }
+                          },
+                          obscureText: authController.passVisible.value,
+                          decoration: InputDecoration(
+                              suffixIcon: InkWell(
+                                  onTap: () {
+                                    authController.passVisible.value =
+                                        !authController.passVisible.value;
+                                  },
+                                  child: Icon(authController.passVisible.value
+                                      ? Icons.visibility
+                                      : Icons.visibility_off)),
+                              prefixIcon: Icon(
+                                Icons.password,
+                                color: ColorManager.primaryColor,
+                                size: 26,
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              labelText: "Mot de Passe"),
+                        ),
                       )),
                   SizedBox(
                     height: PaddingManager.kheight,
@@ -112,7 +119,7 @@ class LoginScreen extends StatelessWidget {
                                   title: "Conexion réussite",
                                   message: "Vous ètes les Bienvenus");
                               authController.loginLaoding.value = false;
-
+                              userController.isSignIn.value = true;
                               Navigator.pushNamed(
                                   context, RouteManager.homeScreen);
                             } else {

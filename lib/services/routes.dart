@@ -29,7 +29,7 @@ class RouteManager {
       case RouteManager.onboardingScreen:
         return MaterialPageRoute(builder: (_) => const OnboardingPage());
       case RouteManager.phoneScreen:
-        return MaterialPageRoute(builder: (_) => const PhoneNumberScreen());
+        return MaterialPageRoute(builder: (_) => PhoneNumberScreen());
       case RouteManager.phoneVerification:
         return MaterialPageRoute(
             builder: (_) => const PhoneVerificationScreen(
@@ -38,7 +38,7 @@ class RouteManager {
       case RouteManager.homeScreen:
         return MaterialPageRoute(builder: (_) => const BottomNavBar());
       case RouteManager.details:
-        return MaterialPageRoute(builder: (_) => const DetailProductScreen());
+        return MaterialPageRoute(builder: (_) => DetailProductScreen());
       default:
     }
     return MaterialPageRoute(builder: (_) => const SplashScreen());

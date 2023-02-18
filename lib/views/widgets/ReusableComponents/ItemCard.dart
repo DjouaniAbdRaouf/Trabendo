@@ -13,7 +13,7 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Get.to(() => const DetailProductScreen()),
+      onTap: () => Get.to(() => DetailProductScreen()),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
@@ -35,7 +35,7 @@ class ItemCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(
                           image: NetworkImage(path ??
-                              "https://photos6.spartoo.com/photos/229/22977049/22977049_350_B.jpg"),
+                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5P9P9Xw9sxsfzf1holi2LIB5n0B64joWcdw&usqp=CAU"),
                           filterQuality: FilterQuality.high,
                           fit: BoxFit.cover)),
                   height: 100,

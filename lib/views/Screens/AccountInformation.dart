@@ -1,17 +1,21 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unused_element, must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:trabendo/controllers/userController.dart';
+import 'package:trabendo/services/AuthServices.dart';
+import 'package:trabendo/services/routes.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 
 class AccountInformation extends StatelessWidget {
-  const AccountInformation({super.key});
+  AccountInformation({super.key});
+  UserController userController = Get.put(UserController());
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appbarWidget(text: ""),
-      body: SingleChildScrollView(
+  Widget _accountInformation({required BuildContext context}) {
+    return Obx(
+      () => SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
           child: Center(
@@ -31,8 +35,7 @@ class AccountInformation extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 color: Colors.transparent,
                                 image: DecorationImage(
-                                    image: NetworkImage(
-                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2TGo6LoQxlQJw7jiBHNiG6lKiAoz62TeCzQ&usqp=CAU"),
+                                    image: AssetImage(ImageManager.avatar),
                                     fit: BoxFit.cover,
                                     filterQuality: FilterQuality.high)),
                           ),
@@ -41,7 +44,7 @@ class AccountInformation extends StatelessWidget {
                             right: 3,
                             child: Icon(
                               Icons.camera_alt,
-                              color: Colors.blue,
+                              color: Colors.grey,
                             ),
                           )
                         ],
@@ -53,27 +56,35 @@ class AccountInformation extends StatelessWidget {
                   height: PaddingManager.kheight / 2,
                 ),
                 Text(
-                  "Djouani Abd Raouf",
+                  "${userController.currentUserModel.value!.firstName} ${userController.currentUserModel.value!.lastName}",
                   style: TextStyleMnager.petitTextGreyBlack,
                 ),
                 SizedBox(
                   height: PaddingManager.kheight / 2,
                 ),
                 Text(
-                  "rdjouani6@gmail.com",
+                  userController.currentUserModel.value!.email,
                   style: TextStyleMnager.petitTextGrey,
                 ),
                 SizedBox(
                   height: PaddingManager.kheight2,
                 ),
                 _rowInformationButton(
-                    iconData: Icons.card_giftcard, title: "Mes Produits"),
+                    iconData: Icons.card_giftcard,
+                    title: "Mes Produits",
+                    function: () {}),
                 _rowInformationButton(
-                    iconData: Icons.account_balance, title: "Profile"),
+                    iconData: Icons.account_balance,
+                    title: "Profile",
+                    function: () {}),
                 _rowInformationButton(
-                    iconData: Icons.info, title: "Informations du Compte"),
+                    iconData: Icons.info,
+                    title: "Informations du Compte",
+                    function: () {}),
                 _rowInformationButton(
-                    iconData: Icons.settings, title: "Paramètres"),
+                    iconData: Icons.settings,
+                    title: "Paramètres",
+                    function: () {}),
                 Divider(
                   thickness: 1,
                   color: Colors.grey,
@@ -82,7 +93,14 @@ class AccountInformation extends StatelessWidget {
                   height: PaddingManager.kheight / 2,
                 ),
                 _rowInformationButton(
-                    iconData: Icons.logout, title: "Deconnecter"),
+                    iconData: Icons.logout,
+                    title: "Deconnecter",
+                    function: () {
+                      AuthServices().logout();
+                      userController.removeData();
+                      Navigator.pushReplacementNamed(
+                          context, RouteManager.homeScreen);
+                    }),
               ],
             ),
           ),
@@ -91,35 +109,127 @@ class AccountInformation extends StatelessWidget {
     );
   }
 
+  Widget _horLigneProfile(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Container(
+          width: double.infinity,
+          color: Colors.grey.shade100,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                color: Colors.white,
+                height: 300,
+                width: double.infinity,
+                child: LottieBuilder.asset(
+                  ImageManager.horligneprofile,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                ),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  "vous ètes en mode hors ligne !",
+                  style: TextStyle(
+                      color: Colors.grey.shade900,
+                      fontSize: 33,
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    "vous devez Inscriver pour ètre un membre avec",
+                    style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.start,
+                  )),
+              SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      elevation: 0.0,
+                    ),
+                    onPressed: () async {
+                      Navigator.pushNamed(context, RouteManager.loginScreen);
+                    },
+                    child: Text(
+                      "Connecter",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18),
+                    )),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: appbarWidget(text: "Mon Compte Trabendo"),
+        body: Obx(() => userController.isSignIn.value
+            ? _accountInformation(context: context)
+            : _horLigneProfile(context)));
+  }
+
   Widget _rowInformationButton(
-      {required String title, required IconData iconData}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.grey.shade200),
-            height: 40,
-            width: 40,
-            child: Icon(iconData),
-          ),
-          SizedBox(
-            width: 8,
-          ),
-          Text(
-            title,
-            style: TextStyleMnager.petitTextGrey,
-          ),
-          Spacer(),
-          Icon(
-            Icons.arrow_right,
-            color: Colors.grey,
-            size: 30,
-          )
-        ],
+      {required String title,
+      required IconData iconData,
+      required Function function}) {
+    return InkWell(
+      onTap: () => function,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.grey.shade200),
+              height: 40,
+              width: 40,
+              child: Icon(iconData),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text(
+              title,
+              style: TextStyleMnager.petitTextGrey,
+            ),
+            Spacer(),
+            Icon(
+              Icons.arrow_right,
+              color: Colors.grey,
+              size: 30,
+            )
+          ],
+        ),
       ),
     );
   }
