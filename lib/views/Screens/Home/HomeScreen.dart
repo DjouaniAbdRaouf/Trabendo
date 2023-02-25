@@ -1,16 +1,21 @@
-// ignore_for_file: prefer_const_constructors ,  prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, no_leading_underscores_for_local_identifiers
+// ignore_for_file: prefer_const_constructors ,  prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, no_leading_underscores_for_local_identifiers, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:trabendo/controllers/userController.dart';
+import 'package:trabendo/controllers/allProductControllers.dart';
+import 'package:trabendo/controllers/productsController.dart';
+import 'package:trabendo/models/CategorieModel.dart';
+import 'package:trabendo/models/productModel.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/Screens/AccountInformation.dart';
 import 'package:trabendo/views/Screens/Home/Favorite.dart';
 import 'package:trabendo/views/Screens/Home/MyProducts.dart';
 
 import 'package:trabendo/views/Screens/Settings.dart';
+import 'package:trabendo/views/Screens/StoreByTypeScreen.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/CategorieItem.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/ItemCard.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/PopularItem.dart';
@@ -21,7 +26,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserController userController = Get.put(UserController());
+    AllProductController allProductController = Get.put(AllProductController());
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: const SystemUiOverlayStyle(
@@ -63,7 +68,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Choisir votre Produit Préféré}",
+                "Choisir votre Produit Préféré",
                 style: TextStyleMnager.getstyle(
                     fontWeight: FontWeight.bold,
                     fontsize: 30,
@@ -88,36 +93,124 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: PaddingManager.kheight,
               ),
-              Text(
-                "Recentes Publications",
-                style: TextStyleMnager.petitTextGrey,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Recentes Publications",
+                    style: TextStyleMnager.petitTextGrey,
+                  ),
+                ],
               ),
               SizedBox(
                 height: PaddingManager.kheight / 2,
               ),
-              _recentPublications(),
+              Obx(() {
+                // les produit ont publiés cette semaine ( a changé )
+                // TODO make it dynamic
+                return allProductController.allproductsUserList.isNotEmpty
+                    ? _recentPublications(
+                        list: allProductController.allproductsUserList
+                            .where((product) =>
+                                DateTime.now().day - product.date!.day <= 7)
+                            .toList())
+                    : Center(
+                        child: SizedBox(
+                          height: 150,
+                          width: 150,
+                          child:
+                              LottieBuilder.asset(ImageManager.loadingLottie),
+                        ),
+                      );
+              }),
               SizedBox(
                 height: PaddingManager.kheight,
               ),
-              Text(
-                "Produits CABA",
-                style: TextStyleMnager.petitTextGrey,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Produits CABA",
+                    style: TextStyleMnager.petitTextGrey,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => StoreByTypeScreen(typecat: "CABA"));
+                    },
+                    child: Text(
+                      "voir tout",
+                      style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline),
+                    ),
+                  )
+                ],
               ),
               SizedBox(
                 height: PaddingManager.kheight / 2,
               ),
-              _recentPublications(),
+              Obx(() {
+                // les produit CABA
+                return allProductController.allproductsUserList.isNotEmpty
+                    ? _recentPublications(
+                        list: allProductController.allproductsUserList
+                            .where((product) => product.typeProduct == "CABA")
+                            .toList())
+                    : Center(
+                        child: SizedBox(
+                          height: 150,
+                          width: 150,
+                          child:
+                              LottieBuilder.asset(ImageManager.loadingLottie),
+                        ),
+                      );
+              }),
               SizedBox(
                 height: PaddingManager.kheight,
               ),
-              Text(
-                "Produits BLED",
-                style: TextStyleMnager.petitTextGrey,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Produits BLED",
+                    style: TextStyleMnager.petitTextGrey,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => StoreByTypeScreen(typecat: "BLED"));
+                    },
+                    child: Text(
+                      "voir tout",
+                      style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline),
+                    ),
+                  )
+                ],
               ),
               SizedBox(
                 height: PaddingManager.kheight / 2,
               ),
-              _recentPublications(),
+              Obx(() {
+                // les produit bled
+                return allProductController.allproductsUserList.isNotEmpty
+                    ? _recentPublications(
+                        list: allProductController.allproductsUserList
+                            .where((product) => product.typeProduct == "BLED")
+                            .toList())
+                    : Center(
+                        child: SizedBox(
+                          height: 150,
+                          width: 150,
+                          child:
+                              LottieBuilder.asset(ImageManager.loadingLottie),
+                        ),
+                      );
+              }),
               SizedBox(
                 height: PaddingManager.kheight,
               ),
@@ -150,13 +243,7 @@ class HomeScreen extends StatelessWidget {
                       mainAxisSpacing: 5,
                       crossAxisSpacing: 5,
                       childAspectRatio: 0.8),
-                  children: [
-                    ItemCard(),
-                    ItemCard(),
-                    ItemCard(),
-                    ItemCard(),
-                    ItemCard(),
-                  ],
+                  children: [],
                 ),
               ),
               SizedBox(
@@ -187,27 +274,18 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _recentPublications() {
+  Widget _recentPublications({required List<ProductsModel> list}) {
     return Container(
       padding: EdgeInsets.all(5),
       height: 220,
       width: double.infinity,
-      child: ListView(
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
-        children: [
-          ItemCard(
-            path:
-                "https://cdn8.ouedkniss.com/1600/medias/announcements/images/PN78yl/WBDsEEAj7bVLcfmb7GUGHOMtBSkINcOMWKwYIsUs.jpg",
-          ),
-          ItemCard(),
-          ItemCard(
-            path:
-                "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/96c9b545-8616-4617-a6c9-9ef3781543b8/survetement-nba-brooklyn-nets-courtside-pour-jHNPvz.png",
-          ),
-          ItemCard(),
-          ItemCard(),
-        ],
+        itemCount: list.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ItemCard(productsModel: list[index]);
+        },
       ),
     );
   }
@@ -218,30 +296,13 @@ class HomeScreen extends StatelessWidget {
       width: double.infinity,
       height: 120,
       color: Colors.white,
-      child: ListView(
+      child: ListView.builder(
+        itemCount: CategorieModel.mesCategories.length,
         scrollDirection: Axis.horizontal,
-        children: [
-          CategorieItem(
-            path: ImageManager.health,
-            title: "Santé",
-          ),
-          CategorieItem(
-            path: ImageManager.technology,
-            title: "Technologies",
-          ),
-          CategorieItem(
-            path: ImageManager.sports,
-            title: "Sport",
-          ),
-          CategorieItem(
-            path: ImageManager.beauty,
-            title: "Beauté",
-          ),
-          CategorieItem(
-            path: ImageManager.sports,
-            title: "Sport",
-          ),
-        ],
+        itemBuilder: (context, index) {
+          return CategorieItem(
+              categorieModel: CategorieModel.mesCategories[index]);
+        },
         shrinkWrap: true,
       ),
     );

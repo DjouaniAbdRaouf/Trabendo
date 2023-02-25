@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:trabendo/controllers/authController.dart';
 import 'package:trabendo/controllers/userController.dart';
+import 'package:trabendo/models/user_model.dart';
 import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
 import 'package:trabendo/services/userservicesDB.dart';
@@ -111,8 +112,17 @@ class LoginScreen extends StatelessWidget {
                         onPressed: () async {
                           if (globalKey.currentState!.validate()) {
                             authController.loginLaoding.value = true;
-                            if (await UserServicesDB().verifyUserLogin(
-                                email: email.text, password: password.text)) {
+                            var userCredential = await AuthServices().signin(
+                                email: email.text, password: password.text);
+                            if (userCredential != null) {
+                              UserModel userModel = UserModel(
+                                id: userCredential.user!.uid,
+                                email: userCredential.user!.email!,
+                                password: "hideen",
+                                displayname: userCredential.user!.displayName!,
+                              );
+                              userController.storeData(userModel);
+                              userController.getData();
                               alertDialog(
                                   context: context,
                                   contentType: ContentType.success,
@@ -184,7 +194,7 @@ class LoginScreen extends StatelessWidget {
                                 elevation: 0.0,
                               ),
                               onPressed: () {
-                                AuthServices().signInWithGoogle();
+                                AuthServices().signInWithGoogle(context);
                               },
                               icon: SvgPicture.asset(
                                 ImageManager.googleIcons,

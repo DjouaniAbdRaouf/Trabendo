@@ -19,7 +19,7 @@ import 'package:uuid/uuid.dart';
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
 
-  TextEditingController firstname = TextEditingController();
+  TextEditingController username = TextEditingController();
   TextEditingController lastName = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
@@ -88,42 +88,25 @@ class RegisterScreen extends StatelessWidget {
                     height: PaddingManager.kheight,
                   ),
                   Text(
-                    "Nom",
+                    "Nom d'utilisateur",
                     style: TextStyleMnager.petitTextGreyBlack,
                   ),
                   SizedBox(
                     height: PaddingManager.kheight / 2,
                   ),
-
                   TextFormGest(
                       colorFill: Colors.grey.shade100,
-                      controller: firstname,
+                      controller: username,
                       coloprefix: ColorManager.primaryColor,
                       errormessage: "Champs Obligatoire",
                       icon: Icons.person,
                       suffixIcon: Icons.admin_panel_settings,
                       colosuffixIcon: Colors.transparent,
-                      hinttext: "Entrer votre Nom"),
+                      hinttext: "Entrer votre Nom d'utilisateur"),
                   SizedBox(
                     height: PaddingManager.kheight,
                   ),
-                  Text(
-                    "Prenom",
-                    style: TextStyleMnager.petitTextGreyBlack,
-                  ),
-                  SizedBox(
-                    height: PaddingManager.kheight / 2,
-                  ),
 
-                  TextFormGest(
-                      colorFill: Colors.grey.shade100,
-                      controller: lastName,
-                      errormessage: "Champs Obligatoire",
-                      icon: Icons.person,
-                      coloprefix: ColorManager.primaryColor,
-                      suffixIcon: Icons.admin_panel_settings,
-                      colosuffixIcon: Colors.transparent,
-                      hinttext: "Entrer votre Prenom"),
                   SizedBox(
                     height: PaddingManager.kheight,
                   ),
@@ -183,27 +166,34 @@ class RegisterScreen extends StatelessWidget {
                         onPressed: () async {
                           if (globalKey.currentState!.validate()) {
                             var uuid = Uuid();
-                            UserModel userModel = UserModel(
-                                id: uuid.v1(),
-                                firstName: firstname.text,
-                                password: password.text,
-                                lastName: lastName.text,
-                                email: email.text);
-                            if (await UserServicesDB()
-                                .addUser(userModel: userModel)) {
-                              userController.storeData(userModel);
-                              userController.getData();
-                              alertDialog(
-                                  context: context,
-                                  contentType: ContentType.success,
-                                  title: "Inscription réussite",
-                                  message:
-                                      "vous pouvez maintenant confimer l'inscription par numero de telephone");
-                              userController.isSignIn.value = true;
+                            authController.isloadingSignup.value = true;
 
-                              Navigator.pushReplacementNamed(
-                                  context, RouteManager.homeScreen);
+                            var userCredential = await AuthServices().signup(
+                                email: email.text, password: password.text);
+                            if (userCredential != null) {
+                              UserModel userModel = UserModel(
+                                  id: userCredential.user!.uid,
+                                  password: password.text,
+                                  displayname: username.text,
+                                  email: email.text);
+                              if (await UserServicesDB()
+                                  .addUser(userModel: userModel)) {
+                                userController.storeData(userModel);
+                                userController.getData();
+                                alertDialog(
+                                    context: context,
+                                    contentType: ContentType.success,
+                                    title: "Inscription réussite",
+                                    message:
+                                        "vous pouvez maintenant confimer l'inscription par numero de telephone");
+                                authController.isloadingSignup.value = false;
+
+                                Navigator.pushReplacementNamed(
+                                    context, RouteManager.homeScreen);
+                              }
                             } else {
+                              authController.isloadingSignup.value = false;
+
                               alertDialog(
                                   context: context,
                                   contentType: ContentType.failure,
@@ -223,6 +213,16 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(
                     height: PaddingManager.kheight / 2,
                   ),
+                  Obx(() => authController.isloadingSignup.value
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: SizedBox(
+                              width: double.infinity,
+                              child: LinearProgressIndicator(
+                                color: ColorManager.primaryColor,
+                              )),
+                        )
+                      : Text("")),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

@@ -13,6 +13,7 @@ class TextFormGest extends StatelessWidget {
       this.textInputtype = TextInputType.text,
       this.coloprefix,
       this.colorFill = Colors.white,
+      this.textLine = 1,
       this.colosuffixIcon,
       required this.hinttext,
       required this.suffixIcon})
@@ -26,6 +27,7 @@ class TextFormGest extends StatelessWidget {
   final Color? colosuffixIcon;
   final Color? coloprefix;
   final String hinttext;
+  final int textLine;
   TextInputType? textInputtype;
   bool obscure;
 
@@ -35,6 +37,7 @@ class TextFormGest extends StatelessWidget {
       decoration: BoxDecoration(
           color: colorFill, borderRadius: BorderRadius.circular(15)),
       child: TextFormField(
+        maxLines: textLine,
         obscureText: obscure,
         controller: controller,
         keyboardType: textInputtype,

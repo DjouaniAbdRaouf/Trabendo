@@ -3,22 +3,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:trabendo/models/CategorieModel.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/Screens/CategorieItems.dart';
 
 class CategorieItem extends StatelessWidget {
-  const CategorieItem({
-    super.key,
-    required this.path,
-    required this.title,
-  });
+  const CategorieItem({super.key, required this.categorieModel});
 
-  final String path, title;
+  final CategorieModel categorieModel;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Get.to(() => const CategorieItemsScreen()),
+      onTap: () => Get.to(() => CategorieItemsScreen(
+            categorie: categorieModel.categorieName,
+          )),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: SizedBox(
@@ -33,7 +32,7 @@ class CategorieItem extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10)),
                 child: Image.asset(
-                  path,
+                  categorieModel.image,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -43,7 +42,7 @@ class CategorieItem extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
-                  title,
+                  categorieModel.categorieName,
                   style: TextStyleMnager.petitTextGreyBlack,
                 ),
               )

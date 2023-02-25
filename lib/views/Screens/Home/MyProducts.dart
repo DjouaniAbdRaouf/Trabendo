@@ -1,6 +1,9 @@
-// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, prefer_is_empty
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:trabendo/controllers/productsController.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/ItemCard.dart';
@@ -57,6 +60,7 @@ class MyProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ProductController productController = Get.put(ProductController());
     return Scaffold(
       appBar: appbarWidget(text: "Mes Produits"),
       body: SingleChildScrollView(
@@ -69,45 +73,45 @@ class MyProductScreen extends StatelessWidget {
                 SizedBox(
                   height: PaddingManager.kheight,
                 ),
-                Text(
-                  "Totale des Annonces : 20",
-                  style: TextStyleMnager.petitTextPrimary,
-                ),
-                Text(
-                  "Produits Vendus : 20",
-                  style: TextStyleMnager.petitTextPrimary,
-                ),
+                Obx(() => Text(
+                      " Totale des Annonces : ${productController.productsUserList.length}",
+                      style: TextStyleMnager.petitTextGreyBlack,
+                    )),
                 SizedBox(
                   height: PaddingManager.kheight,
                 ),
-                Container(
-                  width: double.infinity,
-                  color: Colors.white,
-                  child: GridView(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 5,
-                        childAspectRatio: 0.8),
-                    children: [
-                      ItemCard(
-                        path:
-                            "https://www.cnet.com/a/img/resize/b2ffcfd31dd630e249ee3b06b89124cd47ae67d4/hub/2019/08/20/db2c8f57-f31e-4995-99e3-50f2c7ce49e3/gaming-keyboards-200-01.jpg?auto=webp&fit=crop&height=675&width=1200",
-                      ),
-                      ItemCard(),
-                      ItemCard(
-                        path:
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ-o2gpzoaY1O2718GwnZovqg4LzarPfdpIQ&usqp=CAU",
-                      ),
-                      ItemCard(
-                        path:
-                            "https://www.sneakers-actus.fr/wp-content/uploads/2022/02/Nike-Air-Max-Dawn-Black-White-Noir-Blanc-Sommet.jpg",
-                      ),
-                      ItemCard(),
-                    ],
-                  ),
+                GetBuilder<ProductController>(
+                  init: ProductController(),
+                  initState: (_) {},
+                  builder: (_) {
+                    return _.productsUserList.isNotEmpty
+                        ? Container(
+                            width: double.infinity,
+                            color: Colors.white,
+                            child: GridView.builder(
+                              itemCount: _.productsUserList.length,
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      mainAxisSpacing: 5,
+                                      crossAxisSpacing: 5,
+                                      childAspectRatio: 0.8),
+                              itemBuilder: (BuildContext context, int index) {
+                                return ItemCard(
+                                    productsModel: _.productsUserList[index]);
+                              },
+                            ),
+                          )
+                        : Center(
+                            child: SizedBox(
+                            height: 200,
+                            width: 200,
+                            child:
+                                LottieBuilder.asset(ImageManager.loadingLottie),
+                          ));
+                  },
                 ),
               ],
             )),

@@ -9,18 +9,17 @@ import 'package:trabendo/models/productModel.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/Screens/AccountInformation.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/ItemCard.dart';
-import 'package:trabendo/views/widgets/TextFormFieldGest.dart';
 
-class CategorieItemsScreen extends StatefulWidget {
-  const CategorieItemsScreen({super.key, required this.categorie});
+class StoreByTypeScreen extends StatefulWidget {
+  const StoreByTypeScreen({super.key, required this.typecat});
 
-  final String categorie;
+  final String typecat;
 
   @override
-  State<CategorieItemsScreen> createState() => _CategorieItemsScreenState();
+  State<StoreByTypeScreen> createState() => _StoreByTypeScreenState();
 }
 
-class _CategorieItemsScreenState extends State<CategorieItemsScreen> {
+class _StoreByTypeScreenState extends State<StoreByTypeScreen> {
   final AllProductController allProductController = Get.find();
 
   final TextEditingController textEditingController = TextEditingController();
@@ -149,16 +148,16 @@ class _CategorieItemsScreenState extends State<CategorieItemsScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "Categorie :",
+                    "Produits:  ",
                     style: TextStyleMnager.petitTextGrey,
                   ),
                   Text(
-                    widget.categorie,
+                    widget.typecat,
                     style: TextStyleMnager.petitTextPrimary,
                   ),
                   Spacer(),
                   Text(
-                    "Resultas : ${allProductController.allproductsUserList.where((p0) => p0.categorie == widget.categorie).length} produit(s)",
+                    "Resultas : ${allProductController.allproductsUserList.where((p0) => p0.typeProduct == widget.typecat).length} produit(s)",
                     style: TextStyleMnager.petitTextGrey,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -171,7 +170,7 @@ class _CategorieItemsScreenState extends State<CategorieItemsScreen> {
                   ? _catgorieFilterList(
                       filterCategorieList: allProductController
                           .allproductsUserList
-                          .where((p0) => p0.categorie == widget.categorie)
+                          .where((p0) => p0.typeProduct == widget.typecat)
                           .toList())
                   : Center(
                       child: SizedBox(

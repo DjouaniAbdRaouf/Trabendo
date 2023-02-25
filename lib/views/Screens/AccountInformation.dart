@@ -7,6 +7,8 @@ import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
 import 'package:trabendo/themes.dart';
+import 'package:trabendo/views/Screens/productsScreens/addProduct.dart';
+import 'package:trabendo/views/Screens/reset_password.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 
 class AccountInformation extends StatelessWidget {
@@ -17,7 +19,7 @@ class AccountInformation extends StatelessWidget {
     return Obx(
       () => SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           child: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,7 +58,7 @@ class AccountInformation extends StatelessWidget {
                   height: PaddingManager.kheight / 2,
                 ),
                 Text(
-                  "${userController.currentUserModel.value!.firstName} ${userController.currentUserModel.value!.lastName}",
+                  userController.currentUserModel.value!.displayname,
                   style: TextStyleMnager.petitTextGreyBlack,
                 ),
                 SizedBox(
@@ -67,24 +69,47 @@ class AccountInformation extends StatelessWidget {
                   style: TextStyleMnager.petitTextGrey,
                 ),
                 SizedBox(
+                  height: PaddingManager.kheight / 2,
+                ),
+                SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorManager.primaryColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15))),
+                        onPressed: () {
+                          Get.to(() => AddProductScreen());
+                        },
+                        icon: Icon(Icons.add_card),
+                        label: Text(
+                          "Ajouter un nouveau Produit",
+                          style: TextStyleMnager.petitTextWithe,
+                        ))),
+                SizedBox(
                   height: PaddingManager.kheight2,
                 ),
                 _rowInformationButton(
-                    iconData: Icons.card_giftcard,
-                    title: "Mes Produits",
-                    function: () {}),
+                  iconData: Icons.card_giftcard,
+                  title: "Mes Produits",
+                ),
                 _rowInformationButton(
-                    iconData: Icons.account_balance,
-                    title: "Profile",
-                    function: () {}),
-                _rowInformationButton(
+                  iconData: Icons.account_balance,
+                  title: "Profile",
+                ),
+                InkWell(
+                  onTap: () {
+                    Get.to(() => ResetPassword());
+                  },
+                  child: _rowInformationButton(
                     iconData: Icons.info,
-                    title: "Informations du Compte",
-                    function: () {}),
+                    title: "Confidentialité",
+                  ),
+                ),
                 _rowInformationButton(
-                    iconData: Icons.settings,
-                    title: "Paramètres",
-                    function: () {}),
+                  iconData: Icons.settings,
+                  title: "Paramètres",
+                ),
                 Divider(
                   thickness: 1,
                   color: Colors.grey,
@@ -92,15 +117,18 @@ class AccountInformation extends StatelessWidget {
                 SizedBox(
                   height: PaddingManager.kheight / 2,
                 ),
-                _rowInformationButton(
+                InkWell(
+                  onTap: () {
+                    AuthServices().logout();
+                    userController.removeData();
+                    Navigator.pushReplacementNamed(
+                        context, RouteManager.homeScreen);
+                  },
+                  child: _rowInformationButton(
                     iconData: Icons.logout,
                     title: "Deconnecter",
-                    function: () {
-                      AuthServices().logout();
-                      userController.removeData();
-                      Navigator.pushReplacementNamed(
-                          context, RouteManager.homeScreen);
-                    }),
+                  ),
+                ),
               ],
             ),
           ),
@@ -196,40 +224,37 @@ class AccountInformation extends StatelessWidget {
             : _horLigneProfile(context)));
   }
 
-  Widget _rowInformationButton(
-      {required String title,
-      required IconData iconData,
-      required Function function}) {
-    return InkWell(
-      onTap: () => function,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.grey.shade200),
-              height: 40,
-              width: 40,
-              child: Icon(iconData),
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            Text(
-              title,
-              style: TextStyleMnager.petitTextGrey,
-            ),
-            Spacer(),
-            Icon(
-              Icons.arrow_right,
-              color: Colors.grey,
-              size: 30,
-            )
-          ],
-        ),
+  Widget _rowInformationButton({
+    required String title,
+    required IconData iconData,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.grey.shade200),
+            height: 40,
+            width: 40,
+            child: Icon(iconData),
+          ),
+          SizedBox(
+            width: 8,
+          ),
+          Text(
+            title,
+            style: TextStyleMnager.petitTextGrey,
+          ),
+          Spacer(),
+          Icon(
+            Icons.arrow_right,
+            color: Colors.grey,
+            size: 30,
+          )
+        ],
       ),
     );
   }

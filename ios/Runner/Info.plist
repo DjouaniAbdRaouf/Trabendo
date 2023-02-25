@@ -17,6 +17,8 @@
 		</array>
 	</dict>
 </array>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Allow access to photo library</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

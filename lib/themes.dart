@@ -19,6 +19,9 @@ class ImageManager {
   static String phoneIcons = "assets/icons/phoneNumber.svg";
   static String phoneLottie = "assets/Lottie/phoneNumber.json";
   static String loadingLottie = "assets/Lottie/loading.json";
+  static String resetPassword = "assets/Lottie/resetPassword.json";
+  static String pickphotos = "assets/Lottie/pickphotos.json";
+
   static String horligneprofile = "assets/Lottie/horligneprofile.json";
   static String technology = "assets/icons/technology.png";
   static String beauty = "assets/icons/beauty.png";
@@ -55,7 +58,7 @@ class TextStyleMnager {
   static TextStyle petitTextGreyBlack = TextStyle(
       color: Colors.grey.shade900, fontSize: 16, fontWeight: FontWeight.w600);
   static TextStyle petitTextGrey = TextStyle(
-      color: Colors.grey.shade600, fontSize: 16, fontWeight: FontWeight.w600);
+      color: Colors.grey.shade600, fontSize: 14, fontWeight: FontWeight.w600);
 
   static TextStyle getstyle(
       {required FontWeight fontWeight,

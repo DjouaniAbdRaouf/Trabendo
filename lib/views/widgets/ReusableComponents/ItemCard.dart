@@ -2,18 +2,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:trabendo/models/productModel.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/Screens/DetailsProduct.dart';
 
 class ItemCard extends StatelessWidget {
-  ItemCard({super.key, this.path});
+  const ItemCard({super.key, required this.productsModel});
 
-  String? path;
+  final ProductsModel productsModel;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Get.to(() => DetailProductScreen()),
+      onTap: () => Get.to(() => DetailProductScreen(
+            productsModel: productsModel,
+          )),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
@@ -34,53 +37,42 @@ class ItemCard extends StatelessWidget {
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(
-                          image: NetworkImage(path ??
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5P9P9Xw9sxsfzf1holi2LIB5n0B64joWcdw&usqp=CAU"),
+                          image: NetworkImage(productsModel.photos[0]),
                           filterQuality: FilterQuality.high,
                           fit: BoxFit.cover)),
                   height: 100,
                   width: 140,
                 ),
-                SizedBox(
-                  height: PaddingManager.kheight / 2,
-                ),
                 Text(
-                  "Survetement Sport",
+                  productsModel.name,
                   style: TextStyleMnager.petitTextGreyBlack,
                   overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(
-                  height: PaddingManager.kheight / 2,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "2200 D.A",
-                      style: TextStyleMnager.petitTextPrimary,
+                    Expanded(
+                      child: Text(
+                        "${productsModel.price} DZD",
+                        style: TextStyleMnager.petitTextPrimary,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: const [
-                        Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 16,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 16,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 16,
-                        ),
-                      ],
-                    )
                   ],
-                )
+                ),
+                Row(
+                  children: [
+                    productsModel.typeProduct == "CABA"
+                        ? Text(
+                            "Produit Etranger",
+                            style: TextStyleMnager.petitTextGrey,
+                          )
+                        : Text(
+                            "Produit du BLED",
+                            style: TextStyleMnager.petitTextGrey,
+                          ),
+                  ],
+                ),
               ],
             ),
           ),

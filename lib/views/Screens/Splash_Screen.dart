@@ -3,6 +3,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:trabendo/controllers/OnboardingController.dart';
 
 import 'package:trabendo/services/routes.dart';
 import 'package:trabendo/themes.dart';
@@ -19,10 +21,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    super.initState();
+    OnboardingController onboardingController = Get.put(OnboardingController());
+
     _timer = Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, RouteManager.onboardingScreen);
+      onboardingController.onboardingShowing().then((value) {
+        value
+            ? Navigator.pushReplacementNamed(
+                context, RouteManager.onboardingScreen)
+            : Navigator.pushReplacementNamed(context, RouteManager.homeScreen);
+      });
     });
+    super.initState();
   }
 
   @override
