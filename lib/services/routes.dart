@@ -3,7 +3,6 @@ import 'package:trabendo/views/Screens/Home/HomeScreen.dart';
 import 'package:trabendo/views/Screens/Login_Screen.dart';
 import 'package:trabendo/views/Screens/OnboardingScreen.dart';
 import 'package:trabendo/views/Screens/Otp/PhoneNumberScreen.dart';
-import 'package:trabendo/views/Screens/Otp/PhoneVerificationScreen.dart';
 import 'package:trabendo/views/Screens/Register_Screen.dart';
 import 'package:trabendo/views/Screens/Splash_Screen.dart';
 
@@ -30,10 +29,6 @@ class RouteManager {
       case RouteManager.phoneScreen:
         return MaterialPageRoute(builder: (_) => const PhoneNumberScreen());
       case RouteManager.phoneVerification:
-        return MaterialPageRoute(
-            builder: (_) => const PhoneVerificationScreen(
-                  phoneNumber: '',
-                ));
       case RouteManager.homeScreen:
         return MaterialPageRoute(builder: (_) => const BottomNavBar());
 

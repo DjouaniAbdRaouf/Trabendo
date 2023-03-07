@@ -58,6 +58,8 @@ dependencies:
   firebase_storage: ^11.0.14
   flutter_switch: ^0.3.2
   carousel_slider: ^4.2.1
+  curved_drawer_fork: ^0.0.1
+  chips_choice: ^3.0.0
   
 
 dev_dependencies:

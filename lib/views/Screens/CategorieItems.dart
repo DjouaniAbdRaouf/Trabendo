@@ -8,8 +8,7 @@ import 'package:trabendo/controllers/allProductControllers.dart';
 import 'package:trabendo/models/productModel.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/Screens/AccountInformation.dart';
-import 'package:trabendo/views/widgets/ReusableComponents/ItemCard.dart';
-import 'package:trabendo/views/widgets/TextFormFieldGest.dart';
+import 'package:trabendo/views/widgets/ReusableComponents/FavoriteItem.dart';
 
 class CategorieItemsScreen extends StatefulWidget {
   const CategorieItemsScreen({super.key, required this.categorie});
@@ -191,22 +190,22 @@ class _CategorieItemsScreenState extends State<CategorieItemsScreen> {
       {required List<ProductsModel> filterCategorieList}) {
     return Container(
       width: double.infinity,
-      color: Colors.white,
-      child: GridView.builder(
+      color: Colors.grey.shade100,
+      child: ListView.builder(
         itemCount: filterCategorieList.length,
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 5,
-            crossAxisSpacing: 5,
-            childAspectRatio: 0.8),
+        // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        //     crossAxisCount: 2,
+        //     mainAxisSpacing: 5,
+        //     crossAxisSpacing: 5,
+        //     childAspectRatio: 0.8),
         itemBuilder: (BuildContext context, int index) {
           if (search == "") {
-            return ItemCard(productsModel: filterCategorieList[index]);
+            return FavoriteItem(productsModel: filterCategorieList[index]);
           }
           if (filterCategorieList[index].name.startsWith(search)) {
-            return ItemCard(productsModel: filterCategorieList[index]);
+            return FavoriteItem(productsModel: filterCategorieList[index]);
           }
           return Text("");
         },

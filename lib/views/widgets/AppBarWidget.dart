@@ -10,7 +10,7 @@ AppBar appbarWidget({required String text}) {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark),
     foregroundColor: Colors.grey.shade900,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.grey.shade100,
     elevation: 0.0,
     centerTitle: true,
     title: Text(
@@ -18,7 +18,7 @@ AppBar appbarWidget({required String text}) {
       style: TextStyleMnager.getstyle(
           fontWeight: FontWeight.w500,
           fontsize: 22,
-          color: Colors.grey.shade900),
+          color: Colors.grey.shade800),
     ),
   );
 }

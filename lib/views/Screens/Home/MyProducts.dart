@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:trabendo/controllers/productsController.dart';
+import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/themes.dart';
+import 'package:trabendo/views/Screens/AccountInformation.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
+import 'package:trabendo/views/widgets/ReusableComponents/FavoriteItem.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/ItemCard.dart';
 import 'package:trabendo/views/widgets/TextFormFieldGest.dart';
+import 'package:trabendo/views/widgets/horLigneProfile.dart';
 
 class MyProductScreen extends StatelessWidget {
   const MyProductScreen({super.key});
@@ -61,61 +65,60 @@ class MyProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProductController productController = Get.put(ProductController());
+    UserController userController = Get.put(UserController());
+
     return Scaffold(
       appBar: appbarWidget(text: "Mes Produits"),
-      body: SingleChildScrollView(
-        child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _searchAndFilter(),
-                SizedBox(
-                  height: PaddingManager.kheight,
-                ),
-                Obx(() => Text(
-                      " Totale des Annonces : ${productController.productsUserList.length}",
-                      style: TextStyleMnager.petitTextGreyBlack,
-                    )),
-                SizedBox(
-                  height: PaddingManager.kheight,
-                ),
-                GetBuilder<ProductController>(
-                  init: ProductController(),
-                  initState: (_) {},
-                  builder: (_) {
-                    return _.productsUserList.isNotEmpty
-                        ? Container(
-                            width: double.infinity,
-                            color: Colors.white,
-                            child: GridView.builder(
-                              itemCount: _.productsUserList.length,
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      mainAxisSpacing: 5,
-                                      crossAxisSpacing: 5,
-                                      childAspectRatio: 0.8),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ItemCard(
-                                    productsModel: _.productsUserList[index]);
-                              },
-                            ),
-                          )
-                        : Center(
-                            child: SizedBox(
-                            height: 200,
-                            width: 200,
-                            child:
-                                LottieBuilder.asset(ImageManager.loadingLottie),
-                          ));
-                  },
-                ),
-              ],
-            )),
-      ),
+      body: Obx(() => userController.isSignIn.value
+          ? SingleChildScrollView(
+              child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _searchAndFilter(),
+                      SizedBox(
+                        height: PaddingManager.kheight,
+                      ),
+                      Obx(() => Text(
+                            " Totale des Annonces : ${productController.productsUserList.length}",
+                            style: TextStyleMnager.petitTextGreyBlack,
+                          )),
+                      SizedBox(
+                        height: PaddingManager.kheight,
+                      ),
+                      GetBuilder<ProductController>(
+                        init: ProductController(),
+                        initState: (_) {},
+                        builder: (_) {
+                          return _.productsUserList.isNotEmpty
+                              ? Container(
+                                  width: double.infinity,
+                                  color: Colors.white,
+                                  child: ListView.builder(
+                                    itemCount: _.productsUserList.length,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return FavoriteItem(
+                                          productsModel:
+                                              _.productsUserList[index]);
+                                    },
+                                  ),
+                                )
+                              : Center(
+                                  child: SizedBox(
+                                  height: 300,
+                                  width: double.infinity,
+                                  child:
+                                      LottieBuilder.asset(ImageManager.empty),
+                                ));
+                        },
+                      ),
+                    ],
+                  )))
+          : horLigneProfile(context)),
     );
   }
 }

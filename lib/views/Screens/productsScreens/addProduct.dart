@@ -134,15 +134,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 SizedBox(
                   height: PaddingManager.kheight,
                 ),
-                TextFormGest(
-                    controller: description,
-                    icon: Icons.description,
-                    coloprefix: ColorManager.primaryColor,
-                    colosuffixIcon: Colors.transparent,
-                    errormessage: "chanp obligatoire",
-                    textLine: 10,
-                    hinttext: "Entrer une description du produit",
-                    suffixIcon: Icons.description),
+                Container(
+                  height: 200,
+                  child: TextFormGest(
+                      controller: description,
+                      icon: Icons.description,
+                      coloprefix: ColorManager.primaryColor,
+                      colosuffixIcon: Colors.transparent,
+                      errormessage: "chanp obligatoire",
+                      textLine: 10,
+                      hinttext: "Entrer une description du produit",
+                      suffixIcon: Icons.description),
+                ),
                 SizedBox(
                   height: PaddingManager.kheight,
                 ),

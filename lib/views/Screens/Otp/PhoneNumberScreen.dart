@@ -1,11 +1,14 @@
 // ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, must_be_immutable
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:trabendo/services/AuthServices.dart';
-import 'package:trabendo/services/routes.dart';
 import 'package:trabendo/themes.dart';
+import 'package:trabendo/views/Screens/Otp/PhoneVerificationScreen.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
+import 'package:trabendo/views/widgets/DialogWidget.dart';
 
 class PhoneNumberScreen extends StatefulWidget {
   const PhoneNumberScreen({super.key});
@@ -17,9 +20,10 @@ class PhoneNumberScreen extends StatefulWidget {
 class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   TextEditingController textEditingController = TextEditingController();
 
-  String? phoneNumber;
+  String phoneNumber = "";
 
   String codeCountry = "+213";
+  GlobalKey<FormState> globalKey = GlobalKey();
 
   Widget _buidTextIntro() {
     return Column(
@@ -90,13 +94,16 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                 initialCountryCode: 'DZ',
                 onChanged: (phone) {},
                 onSubmitted: (p0) {
-                  print("submitted number $p0");
-                  phoneNumber = "$codeCountry $p0";
-                  print(phoneNumber);
+                  phoneNumber = "$codeCountry$p0";
                 },
                 onCountryChanged: (value) {
-                  print("country        ${value.code}   ${value.dialCode}");
                   codeCountry = "+${value.dialCode}";
+                },
+                validator: (p0) {
+                  if (phoneNumber.isEmpty) {
+                    return "Champ Obligatoire";
+                  }
+                  return null;
                 },
               ),
             ))
@@ -112,42 +119,52 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Form(
+              key: globalKey,
               child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: PaddingManager.kheight2,
-              ),
-              _buidTextIntro(),
-              SizedBox(
-                height: PaddingManager.kheight3,
-              ),
-              _buildPhoneFormField(),
-              SizedBox(
-                height: PaddingManager.kheight3,
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: SizedBox(
-                  width: 150,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorManager.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 16)),
-                      onPressed: () {
-                        AuthServices().verifyNumber(phonenumber: phoneNumber!);
-                        // Navigator.pushNamed(
-                        //     context, RouteManager.phoneVerification);
-                      },
-                      child: Text(
-                        "Suivant",
-                        style: TextStyleMnager.petitTextWithe,
-                      )),
-                ),
-              ),
-            ],
-          )),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: PaddingManager.kheight2,
+                  ),
+                  _buidTextIntro(),
+                  SizedBox(
+                    height: PaddingManager.kheight3,
+                  ),
+                  _buildPhoneFormField(),
+                  SizedBox(
+                    height: PaddingManager.kheight3,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: SizedBox(
+                      width: 150,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorManager.primaryColor,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16)),
+                          onPressed: () {
+                            if (phoneNumber.length < 10) {
+                              alertDialog(
+                                  context: context,
+                                  title: "Alert",
+                                  contentType: ContentType.failure,
+                                  message: "Entrer le numero de Téléphone");
+                            } else {
+                              Get.to(() => PhoneVerificationScreen(
+                                  phoneNumber: phoneNumber));
+                            }
+                            // Navigator.pushNamed(
+                            //     context, RouteManager.phoneVerification);
+                          },
+                          child: Text(
+                            "Suivant",
+                            style: TextStyleMnager.petitTextWithe,
+                          )),
+                    ),
+                  ),
+                ],
+              )),
         ),
       ),
     );

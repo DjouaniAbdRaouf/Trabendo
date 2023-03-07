@@ -16,13 +16,14 @@ class TextFormGest extends StatelessWidget {
       this.textLine = 1,
       this.colosuffixIcon,
       required this.hinttext,
-      required this.suffixIcon})
+      this.suffixIcon,
+      this.readOnly = false})
       : super(key: key);
 
   final TextEditingController controller;
   final String errormessage;
   final IconData? icon;
-  final IconData suffixIcon;
+  final IconData? suffixIcon;
   final Color colorFill;
   final Color? colosuffixIcon;
   final Color? coloprefix;
@@ -30,15 +31,18 @@ class TextFormGest extends StatelessWidget {
   final int textLine;
   TextInputType? textInputtype;
   bool obscure;
+  bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 50,
       decoration: BoxDecoration(
           color: colorFill, borderRadius: BorderRadius.circular(15)),
       child: TextFormField(
         maxLines: textLine,
         obscureText: obscure,
+        readOnly: readOnly,
         controller: controller,
         keyboardType: textInputtype,
         validator: (value) {

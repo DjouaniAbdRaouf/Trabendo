@@ -10,8 +10,8 @@ import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/models/user_model.dart';
 import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
-import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/themes.dart';
+import 'package:trabendo/views/Screens/Home/HomeScreen.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 import 'package:trabendo/views/widgets/DialogWidget.dart';
 import 'package:trabendo/views/widgets/TextFormFieldGest.dart';
@@ -115,6 +115,7 @@ class LoginScreen extends StatelessWidget {
                             var userCredential = await AuthServices().signin(
                                 email: email.text, password: password.text);
                             if (userCredential != null) {
+                              //TODO get phone , adresse , pays from database
                               UserModel userModel = UserModel(
                                 id: userCredential.user!.uid,
                                 email: userCredential.user!.email!,
@@ -123,6 +124,7 @@ class LoginScreen extends StatelessWidget {
                               );
                               userController.storeData(userModel);
                               userController.getData();
+                              Get.toEnd(() => LoginScreen());
                               alertDialog(
                                   context: context,
                                   contentType: ContentType.success,
@@ -130,8 +132,6 @@ class LoginScreen extends StatelessWidget {
                                   message: "Vous ètes les Bienvenus");
                               authController.loginLaoding.value = false;
                               userController.isSignIn.value = true;
-                              Navigator.pushNamed(
-                                  context, RouteManager.homeScreen);
                             } else {
                               email.clear();
                               password.clear();
@@ -159,10 +159,11 @@ class LoginScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        height: 2,
-                        width: 150,
-                        color: Colors.grey.shade300,
+                      Expanded(
+                        child: Container(
+                          height: 2,
+                          color: Colors.grey.shade300,
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 15),
@@ -171,10 +172,11 @@ class LoginScreen extends StatelessWidget {
                           style: TextStyleMnager.petitTextGrey,
                         ),
                       ),
-                      Container(
-                        height: 2,
-                        width: 150,
-                        color: Colors.grey.shade300,
+                      Expanded(
+                        child: Container(
+                          height: 2,
+                          color: Colors.grey.shade300,
+                        ),
                       ),
                     ],
                   ),
@@ -195,6 +197,7 @@ class LoginScreen extends StatelessWidget {
                               ),
                               onPressed: () {
                                 AuthServices().signInWithGoogle(context);
+                                Get.to(() => HomeScreen());
                               },
                               icon: SvgPicture.asset(
                                 ImageManager.googleIcons,

@@ -6,6 +6,10 @@ import 'package:trabendo/services/productsServicesDB.dart';
 
 class AllProductController extends GetxController {
   var allproductsUserList = RxList<ProductsModel>([]);
+  var activeIndex = 0.obs;
+  void changeIndex(int value) {
+    activeIndex.value = value;
+  }
 
   @override
   void onInit() async {

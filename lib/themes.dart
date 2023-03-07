@@ -21,13 +21,14 @@ class ImageManager {
   static String loadingLottie = "assets/Lottie/loading.json";
   static String resetPassword = "assets/Lottie/resetPassword.json";
   static String pickphotos = "assets/Lottie/pickphotos.json";
+  static String empty = "assets/Lottie/empty.json";
 
   static String horligneprofile = "assets/Lottie/horligneprofile.json";
   static String technology = "assets/icons/technology.png";
   static String beauty = "assets/icons/beauty.png";
   static String health = "assets/icons/health.png";
   static String sports = "assets/icons/sport.png";
-  static String avatar = "assets/images/avatar.png";
+  static String avatar = "assets/images/user.png";
 }
 
 class PaddingManager {
@@ -47,7 +48,7 @@ class TextStyleMnager {
   //text with primary color
   static TextStyle petitTextPrimary = TextStyle(
       color: ColorManager.primaryColor,
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: FontWeight.w600);
   static TextStyle petitTextPrimary2 = TextStyle(
       color: ColorManager.primaryColor,

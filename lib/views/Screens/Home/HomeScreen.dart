@@ -1,12 +1,15 @@
-// ignore_for_file: prefer_const_constructors ,  prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, no_leading_underscores_for_local_identifiers, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors ,  prefer_const_literals_to_create_immutables, file_names, sort_child_properties_last, no_leading_underscores_for_local_identifiers, non_constant_identifier_names, must_be_immutable
 
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:curved_drawer_fork/curved_drawer_fork.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:trabendo/controllers/allProductControllers.dart';
-import 'package:trabendo/controllers/productsController.dart';
 import 'package:trabendo/models/CategorieModel.dart';
 import 'package:trabendo/models/productModel.dart';
 import 'package:trabendo/themes.dart';
@@ -16,6 +19,7 @@ import 'package:trabendo/views/Screens/Home/MyProducts.dart';
 
 import 'package:trabendo/views/Screens/Settings.dart';
 import 'package:trabendo/views/Screens/StoreByTypeScreen.dart';
+import 'package:trabendo/views/Screens/filterScreen.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/CategorieItem.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/ItemCard.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/PopularItem.dart';
@@ -26,8 +30,24 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> carousselImages = [
+      "https://www.admin-info.dz/wp-content/uploads/2021/07/h900-pour-site.jpg",
+      "https://www.2051.fr/wp-content/uploads/2021/07/1626090707_Meilleure-souris-de-jeu-sans-fil-en-2021.jpg"
+    ];
     AllProductController allProductController = Get.put(AllProductController());
     return Scaffold(
+      drawer: CurvedDrawer(
+        color: Colors.white,
+        labelColor: Colors.black54,
+        width: 75.0,
+        items: <DrawerItem>[
+          DrawerItem(icon: Icon(Icons.home), label: "Home"),
+          DrawerItem(icon: Icon(Icons.message), label: "Messages"),
+          DrawerItem(icon: Icon(Icons.message), label: "Messages"),
+          DrawerItem(icon: Icon(Icons.message), label: "Messages"),
+        ],
+        onTap: (index) {},
+      ),
       appBar: AppBar(
         systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
@@ -35,28 +55,28 @@ class HomeScreen extends StatelessWidget {
         foregroundColor: Colors.grey.shade900,
         backgroundColor: Colors.white,
         elevation: 0.0,
-        leading: Icon(
-          Icons.menu,
-          size: 28,
-        ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () => Get.to(() => AccountInformation()),
-              child: Container(
-                padding: EdgeInsets.all(5),
-                height: 70,
-                width: 70,
-                decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey),
-                    shape: BoxShape.circle,
-                    color: Colors.transparent,
-                    image: DecorationImage(
-                        image: AssetImage(ImageManager.avatar),
-                        fit: BoxFit.contain,
-                        filterQuality: FilterQuality.high)),
+              child: Icon(
+                Icons.manage_accounts,
+                size: 35,
               ),
+              // child: Container(
+              //   padding: EdgeInsets.all(5),
+              //   height: 90,
+              //   width: 90,
+              //   decoration: BoxDecoration(
+              //       border: Border.all(width: 1, color: Colors.grey),
+              //       shape: BoxShape.circle,
+              //       color: Colors.transparent,
+              //       image: DecorationImage(
+              //           image: AssetImage(ImageManager.avatar),
+              //           fit: BoxFit.contain,
+              //           filterQuality: FilterQuality.high)),
+              // ),
             ),
           ),
         ],
@@ -82,12 +102,47 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: PaddingManager.kheight,
               ),
+              // CarouselSlider.builder(
+              //   options: CarouselOptions(
+              //     height: 150.0,
+              //     autoPlay: true,
+              //     viewportFraction: 1,
+              //     enableInfiniteScroll: false,
+              //     enlargeCenterPage: true,
+              //     enlargeStrategy: CenterPageEnlargeStrategy.height,
+              //     onPageChanged: (index, reason) {
+              //       allProductController.changeIndex(index);
+              //     },
+              //   ),
+              //   itemBuilder: (BuildContext context, int index, int realIndex) {
+              //     return Container(
+              //       margin: EdgeInsets.symmetric(horizontal: 15),
+              //       decoration: BoxDecoration(
+              //           color: Colors.transparent,
+              //           borderRadius: BorderRadius.circular(25),
+              //           image: DecorationImage(
+              //               image: NetworkImage(carousselImages[index]),
+              //               fit: BoxFit.cover,
+              //               filterQuality: FilterQuality.high)),
+              //     );
+              //   },
+
+              //   itemCount: carousselImages.length,
+
+              // ),
+              SizedBox(
+                height: PaddingManager.kheight,
+              ),
+              _buildIndocator()!,
+              SizedBox(
+                height: PaddingManager.kheight,
+              ),
               Text(
                 "Catégories",
                 style: TextStyleMnager.petitTextGrey,
               ),
               SizedBox(
-                height: PaddingManager.kheight / 2,
+                height: PaddingManager.kheight,
               ),
               _categories(),
               SizedBox(
@@ -232,19 +287,62 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 height: PaddingManager.kheight / 2,
               ),
-              Container(
-                width: double.infinity,
-                color: Colors.white,
-                child: GridView(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 5,
-                      crossAxisSpacing: 5,
-                      childAspectRatio: 0.8),
-                  children: [],
-                ),
+              StreamBuilder<QuerySnapshot>(
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: SizedBox(
+                        height: 150,
+                        width: 150,
+                        child: LottieBuilder.asset(
+                          ImageManager.loadingLottie,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: SizedBox(
+                        height: 150,
+                        width: 150,
+                        child: LottieBuilder.asset(
+                          ImageManager.loadingLottie,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    return Container(
+                      width: double.infinity,
+                      color: Colors.white,
+                      child: GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 5,
+                            crossAxisSpacing: 5,
+                            childAspectRatio: 0.8),
+                        itemBuilder: (context, index) {
+                          QueryDocumentSnapshot data =
+                              snapshot.data!.docs[index];
+                          ProductsModel productsModel =
+                              ProductsModel.fromJson(data);
+                          return ItemCard(productsModel: productsModel);
+                        },
+                        itemCount: snapshot.data!.docs.length,
+                      ),
+                    );
+                  }
+
+                  return Container();
+                },
+                stream: FirebaseFirestore.instance
+                    .collection("products")
+                    .limit(30)
+                    .snapshots(),
               ),
               SizedBox(
                 height: PaddingManager.kheight,
@@ -277,7 +375,7 @@ class HomeScreen extends StatelessWidget {
   Widget _recentPublications({required List<ProductsModel> list}) {
     return Container(
       padding: EdgeInsets.all(5),
-      height: 220,
+      height: 250,
       width: double.infinity,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -333,7 +431,9 @@ class HomeScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              Get.to(() => FilterScreen());
+            },
             child: Container(
               height: 50,
               width: 50,
@@ -353,6 +453,18 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
+
+  Widget? _buildIndocator() {
+    AllProductController allProductController = Get.put(AllProductController());
+
+    return Center(
+      child: Obx(() => AnimatedSmoothIndicator(
+            activeIndex: allProductController.activeIndex.value,
+            count: 4,
+            curve: Curves.bounceInOut,
+          )),
+    );
+  }
 }
 
 class BottomNavBar extends StatelessWidget {
@@ -362,10 +474,9 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> _buildScreens() {
       return [
-        const HomeScreen(),
-        const FavoriteScreen(),
-        const MyProductScreen(),
-        SettingScreen(),
+        HomeScreen(),
+        FavoriteScreen(),
+        MyProductScreen(),
       ];
     }
 
@@ -394,12 +505,6 @@ class BottomNavBar extends StatelessWidget {
           ),
           activeColorPrimary: ColorManager.primaryColor,
           inactiveColorPrimary: ColorManager.primaryWithOpacity75,
-        ),
-        PersistentBottomNavBarItem(
-          icon: const Icon(Icons.settings_outlined),
-          title: ("Setting"),
-          activeColorPrimary: ColorManager.primaryColor,
-          inactiveColorPrimary: Colors.grey,
         ),
       ];
     }

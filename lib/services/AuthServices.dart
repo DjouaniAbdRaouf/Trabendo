@@ -10,6 +10,7 @@ import 'package:trabendo/models/user_model.dart';
 import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/views/Screens/Home/HomeScreen.dart';
 import 'package:trabendo/views/Screens/Login_Screen.dart';
+import 'package:trabendo/views/Screens/productsScreens/addProduct.dart';
 import 'package:trabendo/views/widgets/DialogWidget.dart';
 
 class AuthServices {
@@ -40,6 +41,9 @@ class AuthServices {
           id: userCredential.user!.uid,
           email: userCredential.user!.email!,
           password: "hideen",
+          pays: null,
+          adresse: null,
+          phone: null,
           displayname: userCredential.user!.displayName!);
       userController.storeData(userModel);
       userController.getData();
@@ -53,7 +57,7 @@ class AuthServices {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return const HomeScreen();
+            return HomeScreen();
           } else {
             return LoginScreen();
           }
@@ -93,41 +97,5 @@ class AuthServices {
     } on FirebaseAuthException catch (e) {
       print(e.message);
     }
-  }
-
-  verifyNumber({required String phonenumber}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: '+$phonenumber',
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // Automatic handling of the SMS code on Android devices.
-        // ANDROID ONLY!
-
-        // Sign the user in (or link) with the auto-generated credential
-        await auth.signInWithCredential(credential);
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        // Handle failure events such as invalid phone numbers or whether the SMS quota has been exceeded.
-        if (e.code == 'invalid-phone-number') {
-          print('The provided phone number is not valid.');
-        }
-      },
-      codeSent: (String verificationId, int? resendToken) async {
-        // Update the UI - wait for the user to enter the SMS code
-        String smsCode = 'xxxx';
-
-        // Create a PhoneAuthCredential with the code
-        PhoneAuthCredential credential = PhoneAuthProvider.credential(
-            verificationId: verificationId, smsCode: smsCode);
-
-        // Sign the user in (or link) with the credential
-        await auth.signInWithCredential(credential);
-      },
-      timeout: const Duration(seconds: 60),
-      codeAutoRetrievalTimeout: (String verificationId) {
-        // Auto-resolution timed out...
-      },
-    );
   }
 }

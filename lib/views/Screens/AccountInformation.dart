@@ -6,13 +6,25 @@ import 'package:lottie/lottie.dart';
 import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
+import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/themes.dart';
+import 'package:trabendo/views/Screens/Home/MyProducts.dart';
+import 'package:trabendo/views/Screens/Login_Screen.dart';
+import 'package:trabendo/views/Screens/Otp/PhoneNumberScreen.dart';
 import 'package:trabendo/views/Screens/productsScreens/addProduct.dart';
+import 'package:trabendo/views/Screens/profileScreen.dart';
 import 'package:trabendo/views/Screens/reset_password.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
+import 'package:trabendo/views/widgets/horLigneProfile.dart';
 
-class AccountInformation extends StatelessWidget {
-  AccountInformation({super.key});
+class AccountInformation extends StatefulWidget {
+  const AccountInformation({super.key});
+
+  @override
+  State<AccountInformation> createState() => _AccountInformationState();
+}
+
+class _AccountInformationState extends State<AccountInformation> {
   UserController userController = Get.put(UserController());
 
   Widget _accountInformation({required BuildContext context}) {
@@ -34,11 +46,12 @@ class AccountInformation extends StatelessWidget {
                             height: 100,
                             width: 100,
                             decoration: BoxDecoration(
+                                border: Border.all(width: 1),
                                 shape: BoxShape.circle,
                                 color: Colors.transparent,
                                 image: DecorationImage(
                                     image: AssetImage(ImageManager.avatar),
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.contain,
                                     filterQuality: FilterQuality.high)),
                           ),
                           Positioned(
@@ -71,6 +84,48 @@ class AccountInformation extends StatelessWidget {
                 SizedBox(
                   height: PaddingManager.kheight / 2,
                 ),
+                !userController.isAccountValide.value
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Container(
+                          width: 200,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                          decoration: BoxDecoration(
+                              color: Colors.red.shade500,
+                              borderRadius: BorderRadius.circular(30)),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Inscription Incomplete",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Container(
+                          width: 200,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                          decoration: BoxDecoration(
+                              color: Colors.green.shade500,
+                              borderRadius: BorderRadius.circular(30)),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Compte Validé",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                SizedBox(
+                  height: PaddingManager.kheight / 2,
+                ),
                 SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
@@ -79,7 +134,11 @@ class AccountInformation extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15))),
                         onPressed: () {
-                          Get.to(() => AddProductScreen());
+                          if (!userController.isAccountValide.value) {
+                            Get.to(() => PhoneNumberScreen());
+                          } else {
+                            Get.to(() => AddProductScreen());
+                          }
                         },
                         icon: Icon(Icons.add_card),
                         label: Text(
@@ -89,13 +148,19 @@ class AccountInformation extends StatelessWidget {
                 SizedBox(
                   height: PaddingManager.kheight2,
                 ),
-                _rowInformationButton(
-                  iconData: Icons.card_giftcard,
-                  title: "Mes Produits",
+                InkWell(
+                  onTap: () => Get.to(() => MyProductScreen()),
+                  child: _rowInformationButton(
+                    iconData: Icons.card_giftcard,
+                    title: "Mes Produits",
+                  ),
                 ),
-                _rowInformationButton(
-                  iconData: Icons.account_balance,
-                  title: "Profile",
+                InkWell(
+                  onTap: () => Get.to(() => ProfileScreen()),
+                  child: _rowInformationButton(
+                    iconData: Icons.account_balance,
+                    title: "Profile",
+                  ),
                 ),
                 InkWell(
                   onTap: () {
@@ -137,82 +202,11 @@ class AccountInformation extends StatelessWidget {
     );
   }
 
-  Widget _horLigneProfile(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Container(
-          width: double.infinity,
-          color: Colors.grey.shade100,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                color: Colors.white,
-                height: 300,
-                width: double.infinity,
-                child: LottieBuilder.asset(
-                  ImageManager.horligneprofile,
-                  fit: BoxFit.cover,
-                  filterQuality: FilterQuality.high,
-                ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  "vous ètes en mode hors ligne !",
-                  style: TextStyle(
-                      color: Colors.grey.shade900,
-                      fontSize: 33,
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    "vous devez Inscriver pour ètre un membre avec",
-                    style: TextStyle(
-                        color: Colors.grey.shade500,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.start,
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      padding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      elevation: 0.0,
-                    ),
-                    onPressed: () async {
-                      Navigator.pushNamed(context, RouteManager.loginScreen);
-                    },
-                    child: Text(
-                      "Connecter",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18),
-                    )),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    UserServicesDB().verifyAccountAvailability(
+        id: userController.currentUserModel.value!.id);
+    super.initState();
   }
 
   @override
@@ -221,7 +215,7 @@ class AccountInformation extends StatelessWidget {
         appBar: appbarWidget(text: "Mon Compte Trabendo"),
         body: Obx(() => userController.isSignIn.value
             ? _accountInformation(context: context)
-            : _horLigneProfile(context)));
+            : horLigneProfile(context)));
   }
 
   Widget _rowInformationButton({

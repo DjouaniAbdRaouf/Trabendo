@@ -19,7 +19,9 @@ class UserServicesDB {
         "password": userModel.password,
         "email": userModel.email,
         "phone": userModel.phone,
-        "Date": DateTime.now()
+        "Date": DateTime.now(),
+        "adresse": userModel.adresse,
+        "pays": userModel.pays
       });
       return true;
     } catch (errors) {
@@ -42,6 +44,23 @@ class UserServicesDB {
     return null;
   }
 
+  Future<bool> updateAccount(
+      {required UserModel userModel,
+      required String pays,
+      required String adresse,
+      required String displayname}) async {
+    var results = await users.where("id", isEqualTo: userModel.id).get();
+    var doc = results.docs.first.id;
+    try {
+      await users.doc(doc).update(
+          {"adresse": adresse, "displayname": displayname, "pays": pays});
+      return true;
+    } catch (e) {
+      debugPrint("error when updating account $e");
+      return false;
+    }
+  }
+
   void changePassword(String password) {
     //Create an instance of the current user.
     User user = FirebaseAuth.instance.currentUser!;
@@ -53,6 +72,36 @@ class UserServicesDB {
       debugPrint("Password can't be changed$error");
       //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
     });
+  }
+
+  Future<bool> addPhoneNumber(String phone) async {
+    try {
+      var result = await users
+          .where("id", isEqualTo: userController.currentUserModel.value!.id)
+          .get();
+
+      var userdoc = result.docs.first.id;
+      await users.doc(userdoc).update({"phone": phone});
+      userController.currentUserModel.value!.phone = phone;
+      userController.storeData(userController.currentUserModel.value!);
+      userController.getData();
+      return true;
+    } catch (e) {
+      debugPrint("error$e");
+      return false;
+    }
+  }
+
+  Future<bool> verifyAccountAvailability({required String id}) async {
+    var results = await users.where("id", isEqualTo: id).get();
+    if (results.docs.first["adresse"] == null ||
+        results.docs.first["pays"] == null ||
+        results.docs.first["phone"] == null) {
+      userController.isAccountValide.value = false;
+      return false;
+    }
+    userController.isAccountValide.value = true;
+    return true;
   }
 
   Future<bool> resetPassword(UserModel userModel, String newPassword) async {

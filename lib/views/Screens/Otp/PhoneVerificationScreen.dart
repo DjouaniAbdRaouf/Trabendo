@@ -1,16 +1,30 @@
-// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, unused_element
+// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, unused_element, must_be_immutable, unnecessary_null_comparison, use_build_context_synchronously
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:trabendo/services/routes.dart';
+import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
+import 'package:trabendo/views/widgets/DialogWidget.dart';
 
-class PhoneVerificationScreen extends StatelessWidget {
+import '../productsScreens/addProduct.dart';
+
+class PhoneVerificationScreen extends StatefulWidget {
   const PhoneVerificationScreen({super.key, required this.phoneNumber});
-
   final String phoneNumber;
+
+  @override
+  State<PhoneVerificationScreen> createState() =>
+      _PhoneVerificationScreenState();
+}
+
+class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
+  String otpcode = "";
+  String verifiId = "";
 
   Widget _buidTextIntro() {
     return Column(
@@ -71,6 +85,7 @@ class PhoneVerificationScreen extends StatelessWidget {
       controller: TextEditingController(),
       keyboardType: TextInputType.number,
       onCompleted: (v) {
+        otpcode = v;
         debugPrint("Completed");
       },
       onTap: () {
@@ -86,6 +101,12 @@ class PhoneVerificationScreen extends StatelessWidget {
         return true;
       },
     );
+  }
+
+  @override
+  void initState() {
+    verifyNumber(phonenumber: widget.phoneNumber, context: context);
+    super.initState();
   }
 
   @override
@@ -128,15 +149,21 @@ class PhoneVerificationScreen extends StatelessWidget {
               SizedBox(
                 height: PaddingManager.kheight / 2,
               ),
-              RichText(
-                text: TextSpan(
-                    text: "Vous n'avais pas recu le Code ? ",
-                    style: TextStyleMnager.petitTextGrey,
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: "Renvoyé le Code",
-                          style: TextStyleMnager.petitTextPrimary)
-                    ]),
+              InkWell(
+                onTap: () {
+                  verifyNumber(
+                      phonenumber: widget.phoneNumber, context: context);
+                },
+                child: RichText(
+                  text: TextSpan(
+                      text: "Vous n'avais pas recu le Code ? ",
+                      style: TextStyleMnager.petitTextGrey,
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: "Re-envoyé le Code",
+                            style: TextStyleMnager.petitTextPrimary)
+                      ]),
+                ),
               ),
               SizedBox(
                 height: PaddingManager.kheight2,
@@ -152,8 +179,15 @@ class PhoneVerificationScreen extends StatelessWidget {
                       elevation: 0.0,
                     ),
                     onPressed: () {
-                      Navigator.pushReplacementNamed(
-                          context, RouteManager.homeScreen);
+                      if (otpcode.length < 6) {
+                        alertDialog(
+                            context: context,
+                            title: "Alert",
+                            contentType: ContentType.failure,
+                            message: "Entrer le code OTP");
+                      } else {
+                        verifyOTP();
+                      }
                     },
                     child: Text(
                       "Continue",
@@ -167,6 +201,71 @@ class PhoneVerificationScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> verifyOTP() async {
+    try {
+      await FirebaseAuth.instance
+          .signInWithCredential(
+        PhoneAuthProvider.credential(
+          verificationId: verifiId,
+          smsCode: otpcode,
+        ),
+      )
+          .then((value) async {
+        if (value.user != null) {
+          await UserServicesDB().addPhoneNumber(widget.phoneNumber);
+          Get.to(() => AddProductScreen());
+          alertDialog(
+              context: context,
+              title: "Succès",
+              contentType: ContentType.success,
+              message: "Numéro de telepone vérifié");
+        } else {
+          alertDialog(
+              context: context,
+              title: "Alert",
+              contentType: ContentType.failure,
+              message: "OTP incorrect");
+        }
+      });
+    } catch (e) {
+      alertDialog(
+          context: context,
+          title: "Alert",
+          contentType: ContentType.failure,
+          message: "OTP incorrect");
+    }
+  }
+
+  verifyNumber(
+      {required String phonenumber, required BuildContext context}) async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: '+$phonenumber',
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        alertDialog(
+            context: context,
+            title: "succès",
+            contentType: ContentType.failure,
+            message: "Verification Complete");
+        await FirebaseAuth.instance.signInWithCredential(credential);
+        Get.to(() => const AddProductScreen());
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          alertDialog(
+              context: context,
+              title: "Erreur",
+              contentType: ContentType.failure,
+              message: "Numéro invalide ou code incorrecte");
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        verifiId = verificationId;
+      },
+      timeout: const Duration(seconds: 60),
+      codeAutoRetrievalTimeout: (String verificationId) {},
     );
   }
 }

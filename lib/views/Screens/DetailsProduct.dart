@@ -43,20 +43,22 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
             children: [
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 300.0,
-                  autoPlay: true,
-                ),
+                    height: 300.0,
+                    autoPlay: true,
+                    viewportFraction: 1,
+                    enableInfiniteScroll: false),
                 items: widget.productsModel.photos.map((i) {
                   return Builder(
                     builder: (BuildContext context) {
                       return Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10),
                         width: double.infinity,
                         height: 300,
                         decoration: BoxDecoration(
                           color: Colors.transparent,
                           image: DecorationImage(
                               image: NetworkImage(i),
-                              fit: BoxFit.fill,
+                              fit: BoxFit.fitHeight,
                               filterQuality: FilterQuality.high),
                         ),
                       );
@@ -89,25 +91,9 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                           "${widget.productsModel.price} DZD",
                           style: TextStyleMnager.petitTextPrimary2,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-                            Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                              size: 16,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                              size: 16,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                              size: 16,
-                            ),
-                          ],
+                        Icon(
+                          Icons.favorite,
+                          color: Colors.red,
                         )
                       ],
                     ),
@@ -187,7 +173,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
           ),
           Text(
             "Numero de Téléphone : ${userModel.phone ?? "Non Défini"}",
-            style: TextStyleMnager.petitTextPrimary,
+            style: TextStyleMnager.petitTextGrey,
           ),
         ],
       ),

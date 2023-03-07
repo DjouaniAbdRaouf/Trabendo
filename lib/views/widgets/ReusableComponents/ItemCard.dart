@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, must_be_immutable
+// ignore_for_file: file_names, must_be_immutable, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,19 +18,20 @@ class ItemCard extends StatelessWidget {
             productsModel: productsModel,
           )),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(6.0),
         child: Card(
           elevation: 6.0,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Container(
-            padding: const EdgeInsets.all(10),
-            height: 180,
+            padding: const EdgeInsets.all(8),
+            height: 220,
             width: 160,
             decoration: BoxDecoration(
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(10)),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   decoration: BoxDecoration(
@@ -43,13 +44,18 @@ class ItemCard extends StatelessWidget {
                   height: 100,
                   width: 140,
                 ),
+                SizedBox(
+                  height: PaddingManager.kheight / 2,
+                ),
                 Text(
                   productsModel.name,
                   style: TextStyleMnager.petitTextGreyBlack,
                   overflow: TextOverflow.ellipsis,
                 ),
+                SizedBox(
+                  height: 8,
+                ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
                       child: Text(
@@ -60,7 +66,11 @@ class ItemCard extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 8,
+                ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     productsModel.typeProduct == "CABA"
                         ? Text(

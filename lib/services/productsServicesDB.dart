@@ -74,7 +74,7 @@ class ProductServiceDB {
             photos: results.docs[i]["photos"].cast<String>(),
             idUser: results.docs[i]["idUser"],
             idproduct: results.docs[i]["idproduct"],
-            typeProduct: results.docs[i]["title"],
+            typeProduct: results.docs[i]["type"],
             description: results.docs[i]["desc"],
             date: results.docs[i]["Date"].toDate(),
             livrasionDispo: results.docs[i]["livrasionDispo"]);
