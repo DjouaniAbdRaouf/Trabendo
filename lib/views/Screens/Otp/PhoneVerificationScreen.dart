@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/themes.dart';
+import 'package:trabendo/views/Screens/profileScreen.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 import 'package:trabendo/views/widgets/DialogWidget.dart';
 
@@ -136,7 +137,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                 height: PaddingManager.kheight / 2,
               ),
               Text(
-                "+213699314941",
+                "+${widget.phoneNumber}",
                 style: TextStyleMnager.petitTextPrimary,
               ),
               SizedBox(
@@ -146,6 +147,13 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                   padding:
                       EdgeInsets.symmetric(horizontal: PaddingManager.kheight),
                   child: _pincodeWidget(context)),
+              SizedBox(
+                height: PaddingManager.kheight,
+              ),
+              Text(
+                "Patientez SVP  ....... !",
+                style: TextStyleMnager.petitTextPrimary,
+              ),
               SizedBox(
                 height: PaddingManager.kheight / 2,
               ),
@@ -216,7 +224,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
           .then((value) async {
         if (value.user != null) {
           await UserServicesDB().addPhoneNumber(widget.phoneNumber);
-          Get.to(() => AddProductScreen());
+          Get.off(() => ProfileScreen());
           alertDialog(
               context: context,
               title: "Succès",

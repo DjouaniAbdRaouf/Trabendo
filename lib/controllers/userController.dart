@@ -39,9 +39,9 @@ class UserController extends GetxController {
   }
 
   bool verifyValidateAccount() {
-    if (currentUserModel.value!.adresse == null ||
-        currentUserModel.value!.phone == null ||
-        currentUserModel.value!.adresse == null) {
+    if (currentUserModel.value!.adresse == "" ||
+        currentUserModel.value!.phone == "" ||
+        currentUserModel.value!.adresse == "") {
       return false;
     }
     return true;
@@ -63,6 +63,7 @@ class UserController extends GetxController {
 
   void removeData() async {
     await sharedPreferences.remove("userdata");
+    await sharedPreferences.remove("favourite");
     isSignIn.value = false;
   }
 }

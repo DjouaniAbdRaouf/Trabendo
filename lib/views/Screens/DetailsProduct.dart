@@ -4,10 +4,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:trabendo/controllers/favouritController.dart';
 import 'package:trabendo/controllers/productsController.dart';
 import 'package:trabendo/models/productModel.dart';
 import 'package:trabendo/models/user_model.dart';
 import 'package:trabendo/themes.dart';
+import 'package:trabendo/views/Screens/productFromSpesificUser.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 
 class DetailProductScreen extends StatefulWidget {
@@ -21,6 +23,7 @@ class DetailProductScreen extends StatefulWidget {
 
 class _DetailProductScreenState extends State<DetailProductScreen> {
   ProductController productController = Get.put(ProductController());
+  FavouriteController favouriteController = Get.put(FavouriteController());
 
   @override
   void initState() {
@@ -70,7 +73,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                 height: PaddingManager.kheight,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.symmetric(horizontal: 15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -87,13 +90,46 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "${widget.productsModel.price} DZD",
-                          style: TextStyleMnager.petitTextPrimary2,
+                        Expanded(
+                          child: Text(
+                            "${widget.productsModel.price} DZD",
+                            style: TextStyleMnager.petitTextPrimary2,
+                          ),
                         ),
-                        Icon(
-                          Icons.favorite,
-                          color: Colors.red,
+                        InkWell(
+                          onTap: () {
+                            if (favouriteController.productExiste(
+                                productsModel: widget.productsModel)) {
+                              favouriteController.deleteFavourite(
+                                  productsModel: widget.productsModel);
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //   const SnackBar(
+                              //     content: Text(
+                              //         'Produit retiré de la liste des favoris'),
+                              //   ),
+                              // );
+                            } else {
+                              favouriteController.saveFavourite(
+                                  productsModel: widget.productsModel);
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //   const SnackBar(
+                              //     content: Text(
+                              //         'Produit ajouté à la liste des favoris'),
+                              //   ),
+                              // );
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Obx(() => Icon(
+                                  !favouriteController.productExiste(
+                                          productsModel: widget.productsModel)
+                                      ? Icons.favorite_border
+                                      : Icons.favorite,
+                                  color: Colors.red,
+                                  size: 34,
+                                )),
+                          ),
                         )
                       ],
                     ),
@@ -152,7 +188,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
 
   Widget _userReferenceWidget({required UserModel userModel}) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -163,18 +199,76 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
             userModel.displayname,
             style: TextStyleMnager.petitTextGrey,
           ),
+          if (userModel.adresse != null)
+            Text(
+              "Adresse  : ${userModel.adresse}",
+              style: TextStyleMnager.petitTextGrey,
+            ),
+          if (userModel.pays != null)
+            Text(
+              "Pays : ${userModel.pays}",
+              style: TextStyleMnager.petitTextGrey,
+            ),
           Text(
-            "Adresse  : France paris ",
+            "Numero de Téléphone : ${userModel.phone ?? ""}",
             style: TextStyleMnager.petitTextGrey,
           ),
-          Text(
-            "Pays : France",
-            style: TextStyleMnager.petitTextGrey,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                "Contacter le vendeur : ",
+                style: TextStyleMnager.petitTextGrey,
+              ),
+              IconButton(
+                  onPressed: () {
+                    productController.makePhoneCall(userModel.phone!);
+                  },
+                  icon: Icon(
+                    Icons.call,
+                    color: ColorManager.primaryColor,
+                    size: 30,
+                  )),
+              SizedBox(
+                width: 15,
+              ),
+              IconButton(
+                  onPressed: () {
+                    productController.openWhatsapp(
+                        context: context, number: userModel.phone!);
+                  },
+                  icon: Image.asset(
+                    ImageManager.whatsapp,
+                    width: 100,
+                    height: 100,
+                  )),
+              SizedBox(
+                width: 15,
+              ),
+              IconButton(
+                  onPressed: () {
+                    productController.sendAnSms(userModel.phone!, context);
+                  },
+                  icon: Icon(
+                    Icons.sms,
+                    color: ColorManager.primaryColor,
+                    size: 30,
+                  )),
+            ],
           ),
-          Text(
-            "Numero de Téléphone : ${userModel.phone ?? "Non Défini"}",
-            style: TextStyleMnager.petitTextGrey,
+          SizedBox(
+            height: PaddingManager.kheight,
           ),
+          MaterialButton(
+            onPressed: () {
+              Get.to(() => ProductForSpesificUserScreen(userModel: userModel));
+            },
+            child: Text(
+              "Produits de cet vendeur",
+              style: TextStyleMnager.petitTextWithe,
+            ),
+            color: ColorManager.primaryColor,
+          )
         ],
       ),
     );

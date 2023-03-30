@@ -175,9 +175,9 @@ class RegisterScreen extends StatelessWidget {
                                   id: userCredential.user!.uid,
                                   password: password.text,
                                   displayname: username.text,
-                                  pays: null,
-                                  adresse: null,
-                                  phone: null,
+                                  pays: "",
+                                  adresse: "",
+                                  phone: "",
                                   email: email.text);
                               if (await UserServicesDB()
                                   .addUser(userModel: userModel)) {

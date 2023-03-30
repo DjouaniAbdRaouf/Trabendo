@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:trabendo/controllers/OnboardingController.dart';
 
 import 'package:trabendo/services/routes.dart';
+import 'package:trabendo/services/settingsServices.dart';
 import 'package:trabendo/themes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -23,13 +24,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     OnboardingController onboardingController = Get.put(OnboardingController());
 
-    _timer = Timer(const Duration(seconds: 3), () {
-      onboardingController.onboardingShowing().then((value) {
-        value
-            ? Navigator.pushReplacementNamed(
-                context, RouteManager.onboardingScreen)
-            : Navigator.pushReplacementNamed(context, RouteManager.homeScreen);
-      });
+    _timer = Timer(const Duration(seconds: 4), () {
+      SettingsServices services = Get.find();
+      services.isshowing.isFalse
+          ? Navigator.pushReplacementNamed(
+              context, RouteManager.onboardingScreen)
+          : Navigator.pushReplacementNamed(context, RouteManager.homeScreen);
     });
     super.initState();
   }
@@ -42,26 +42,12 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.card_giftcard,
-              size: 180,
-              color: ColorManager.textColor,
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "T",
-                  style: TextStyleMnager.lobster,
-                ),
-                Text(
-                  "-rabendo",
-                  style: TextStyleMnager.lora2,
-                ),
-              ],
+            Image.asset(
+              ImageManager.logo,
+              width: MediaQuery.of(context).size.width * 0.60,
+              height: 250,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.high,
             )
           ],
         ),

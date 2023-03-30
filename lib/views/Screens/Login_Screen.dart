@@ -10,6 +10,7 @@ import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/models/user_model.dart';
 import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
+import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/Screens/Home/HomeScreen.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
@@ -110,28 +111,43 @@ class LoginScreen extends StatelessWidget {
                           elevation: 0.0,
                         ),
                         onPressed: () async {
+                          // with email and password
                           if (globalKey.currentState!.validate()) {
                             authController.loginLaoding.value = true;
                             var userCredential = await AuthServices().signin(
-                                email: email.text, password: password.text);
+                                email: email.text.trim(),
+                                password: password.text);
                             if (userCredential != null) {
-                              //TODO get phone , adresse , pays from database
-                              UserModel userModel = UserModel(
-                                id: userCredential.user!.uid,
-                                email: userCredential.user!.email!,
-                                password: "hideen",
-                                displayname: userCredential.user!.displayName!,
-                              );
-                              userController.storeData(userModel);
-                              userController.getData();
-                              Get.toEnd(() => LoginScreen());
-                              alertDialog(
-                                  context: context,
-                                  contentType: ContentType.success,
-                                  title: "Conexion réussite",
-                                  message: "Vous ètes les Bienvenus");
-                              authController.loginLaoding.value = false;
-                              userController.isSignIn.value = true;
+                              if (await UserServicesDB()
+                                  .getUserData(uid: userCredential.user!.uid)) {
+                                var displayname = await UserServicesDB()
+                                    .getdataforuser(
+                                        id: userCredential.user!.uid);
+
+                                if (displayname != null) {
+                                  UserModel userModel = UserModel(
+                                    id: userCredential.user!.uid,
+                                    email: userCredential.user!.email!,
+                                    password: "",
+                                    phone: "",
+                                    pays: "",
+                                    adresse: "",
+                                    displayname: displayname,
+                                  );
+                                  UserServicesDB().verifyAccountAvailability(
+                                      id: userCredential.user!.uid);
+                                  userController.storeData(userModel);
+                                  userController.getData();
+                                  Get.to(() => HomeScreen());
+                                  alertDialog(
+                                      context: context,
+                                      contentType: ContentType.success,
+                                      title: "Conexion réussite",
+                                      message: "Vous ètes les Bienvenus");
+                                  authController.loginLaoding.value = false;
+                                  userController.isSignIn.value = true;
+                                }
+                              }
                             } else {
                               email.clear();
                               password.clear();
@@ -197,6 +213,7 @@ class LoginScreen extends StatelessWidget {
                               ),
                               onPressed: () {
                                 AuthServices().signInWithGoogle(context);
+
                                 Get.to(() => HomeScreen());
                               },
                               icon: SvgPicture.asset(

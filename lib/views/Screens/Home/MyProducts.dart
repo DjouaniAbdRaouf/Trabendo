@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, prefer_is_empty
+// ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, prefer_is_empty, must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,16 +6,20 @@ import 'package:lottie/lottie.dart';
 import 'package:trabendo/controllers/productsController.dart';
 import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/themes.dart';
-import 'package:trabendo/views/Screens/AccountInformation.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
-import 'package:trabendo/views/widgets/ReusableComponents/FavoriteItem.dart';
-import 'package:trabendo/views/widgets/ReusableComponents/ItemCard.dart';
-import 'package:trabendo/views/widgets/TextFormFieldGest.dart';
+import 'package:trabendo/views/widgets/ReusableComponents/MyProductItem.dart';
 import 'package:trabendo/views/widgets/horLigneProfile.dart';
 
-class MyProductScreen extends StatelessWidget {
-  const MyProductScreen({super.key});
+class MyProductScreen extends StatefulWidget {
+  MyProductScreen({super.key});
 
+  @override
+  State<MyProductScreen> createState() => _MyProductScreenState();
+}
+
+class _MyProductScreenState extends State<MyProductScreen> {
+  TextEditingController searchediting = TextEditingController();
+  String search = '';
   Widget _searchAndFilter() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,37 +31,43 @@ class MyProductScreen extends StatelessWidget {
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.grey.shade200)),
-            child: TextFormGest(
-                controller: TextEditingController(),
-                errormessage: "",
-                icon: Icons.abc,
-                colorFill: Colors.grey.shade200,
-                hinttext: "Cherchez votre Produit",
-                colosuffixIcon: Colors.grey.shade400,
-                suffixIcon: Icons.search),
-          ),
-          flex: 3,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: InkWell(
-            onTap: () {},
-            child: Container(
-              height: 50,
-              width: 50,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: ColorManager.primaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                Icons.filter_list,
-                color: Colors.white,
-                size: 35,
-              ),
+            child: TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  search = value.toLowerCase();
+                  searchediting.text.toLowerCase();
+                });
+              },
+              controller: searchediting,
+              decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.grey,
+                    size: 26,
+                  ),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  disabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.red),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(width: 1, color: ColorManager.primaryColor),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  labelText: "Cherchez par Nom du Produit"),
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -101,9 +111,18 @@ class MyProductScreen extends StatelessWidget {
                                     shrinkWrap: true,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      return FavoriteItem(
-                                          productsModel:
-                                              _.productsUserList[index]);
+                                      if (search == "") {
+                                        return MyproductItem(
+                                            productsModel:
+                                                _.productsUserList[index]);
+                                      }
+                                      if (_.productsUserList[index].name
+                                          .startsWith(search)) {
+                                        return MyproductItem(
+                                            productsModel:
+                                                _.productsUserList[index]);
+                                      }
+                                      return Text("");
                                     },
                                   ),
                                 )

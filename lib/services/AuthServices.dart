@@ -10,7 +10,6 @@ import 'package:trabendo/models/user_model.dart';
 import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/views/Screens/Home/HomeScreen.dart';
 import 'package:trabendo/views/Screens/Login_Screen.dart';
-import 'package:trabendo/views/Screens/productsScreens/addProduct.dart';
 import 'package:trabendo/views/widgets/DialogWidget.dart';
 
 class AuthServices {
@@ -37,17 +36,24 @@ class AuthServices {
 
       var userCredential =
           await FirebaseAuth.instance.signInWithCredential(credantial);
+      print("*-*-*-*-*-*-*-*-*");
       UserModel userModel = UserModel(
           id: userCredential.user!.uid,
           email: userCredential.user!.email!,
-          password: "hideen",
-          pays: null,
-          adresse: null,
-          phone: null,
+          password: "",
+          phone: "",
+          pays: "",
+          adresse: "",
           displayname: userCredential.user!.displayName!);
+      UserServicesDB().verifyAccountAvailability(id: userCredential.user!.uid);
       userController.storeData(userModel);
       userController.getData();
-      await UserServicesDB().addUser(userModel: userModel);
+      if (!await UserServicesDB().getUserData(uid: userCredential.user!.uid)) {
+        print("added to firestore");
+        await UserServicesDB().addUser(userModel: userModel);
+      } else {
+        print("exist");
+      }
     }
   }
 

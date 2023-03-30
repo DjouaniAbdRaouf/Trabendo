@@ -47,77 +47,81 @@ class FavoriteItem extends StatelessWidget {
                 SizedBox(
                   width: PaddingManager.kheight / 2,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: PaddingManager.kheight,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          productsModel.name,
-                          style: TextStyleMnager.getstyle(
-                              fontWeight: FontWeight.bold,
-                              fontsize: 18,
-                              color: Colors.black),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: PaddingManager.kheight / 2,
-                    ),
-                    Text(
-                      "Type de Produit : ${productsModel.typeProduct}",
-                      style: TextStyleMnager.petitTextGrey,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      "Categorie : ${productsModel.categorie}",
-                      style: TextStyleMnager.petitTextGrey,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Livraison : ",
-                          style: TextStyleMnager.petitTextGrey,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        productsModel.livrasionDispo
-                            ? Icon(
-                                Icons.check_circle,
-                                color: Colors.green,
-                                size: 26,
-                              )
-                            : Icon(
-                                Icons.remove_circle,
-                                color: Colors.red,
-                                size: 26,
-                              )
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-                        decoration: BoxDecoration(
-                            color: Colors.green.shade500,
-                            borderRadius: BorderRadius.circular(30)),
-                        alignment: Alignment.center,
-                        child: Text(
-                          "${productsModel.price} DZD",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: PaddingManager.kheight,
                       ),
-                    )
-                  ],
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              productsModel.name,
+                              style: TextStyleMnager.getstyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontsize: 18,
+                                  color: Colors.black),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: PaddingManager.kheight / 2,
+                      ),
+                      Text(
+                        "Type de Produit : ${productsModel.typeProduct}",
+                        style: TextStyleMnager.petitTextGrey,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        "Categorie : ${productsModel.categorie}",
+                        style: TextStyleMnager.petitTextGrey,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Livraison : ",
+                            style: TextStyleMnager.petitTextGrey,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          productsModel.livrasionDispo
+                              ? Icon(
+                                  Icons.check_circle,
+                                  color: Colors.green,
+                                  size: 26,
+                                )
+                              : Icon(
+                                  Icons.remove_circle,
+                                  color: Colors.red,
+                                  size: 26,
+                                )
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                          decoration: BoxDecoration(
+                              color: Colors.green.shade500,
+                              borderRadius: BorderRadius.circular(30)),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "${productsModel.price} DZD",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ],
             ),

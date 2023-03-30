@@ -8,6 +8,7 @@ import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
 import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/themes.dart';
+import 'package:trabendo/views/Screens/Home/HomeScreen.dart';
 import 'package:trabendo/views/Screens/Home/MyProducts.dart';
 import 'package:trabendo/views/Screens/Login_Screen.dart';
 import 'package:trabendo/views/Screens/Otp/PhoneNumberScreen.dart';
@@ -42,26 +43,13 @@ class _AccountInformationState extends State<AccountInformation> {
                       onTap: () {},
                       child: Stack(
                         children: [
-                          Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1),
-                                shape: BoxShape.circle,
-                                color: Colors.transparent,
-                                image: DecorationImage(
-                                    image: AssetImage(ImageManager.avatar),
-                                    fit: BoxFit.contain,
-                                    filterQuality: FilterQuality.high)),
+                          Image.asset(
+                            ImageManager.logo,
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            height: 150,
+                            fit: BoxFit.contain,
+                            filterQuality: FilterQuality.high,
                           ),
-                          Positioned(
-                            bottom: 3,
-                            right: 3,
-                            child: Icon(
-                              Icons.camera_alt,
-                              color: Colors.grey,
-                            ),
-                          )
                         ],
                       ),
                     ),
@@ -85,22 +73,26 @@ class _AccountInformationState extends State<AccountInformation> {
                   height: PaddingManager.kheight / 2,
                 ),
                 !userController.isAccountValide.value
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Container(
-                          width: 200,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-                          decoration: BoxDecoration(
-                              color: Colors.red.shade500,
-                              borderRadius: BorderRadius.circular(30)),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Inscription Incomplete",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
+                    ? InkWell(
+                        onTap: () => Get.to(() => PhoneNumberScreen()),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Container(
+                            width: 200,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 8),
+                            decoration: BoxDecoration(
+                                color: Colors.red.shade500,
+                                borderRadius: BorderRadius.circular(30)),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Confimer votre Compte Trabendo",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
                       )
@@ -126,25 +118,27 @@ class _AccountInformationState extends State<AccountInformation> {
                 SizedBox(
                   height: PaddingManager.kheight / 2,
                 ),
-                SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorManager.primaryColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15))),
-                        onPressed: () {
-                          if (!userController.isAccountValide.value) {
-                            Get.to(() => PhoneNumberScreen());
-                          } else {
-                            Get.to(() => AddProductScreen());
-                          }
-                        },
-                        icon: Icon(Icons.add_card),
-                        label: Text(
-                          "Ajouter un nouveau Produit",
-                          style: TextStyleMnager.petitTextWithe,
-                        ))),
+                Obx(() => userController.isAccountValide.value
+                    ? SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: ColorManager.primaryColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15))),
+                            onPressed: () {
+                              if (!userController.isAccountValide.value) {
+                                Get.to(() => PhoneNumberScreen());
+                              } else {
+                                Get.to(() => AddProductScreen());
+                              }
+                            },
+                            icon: Icon(Icons.add_card),
+                            label: Text(
+                              "Ajouter un nouveau Produit",
+                              style: TextStyleMnager.petitTextWithe,
+                            )))
+                    : Container()),
                 SizedBox(
                   height: PaddingManager.kheight2,
                 ),
@@ -171,9 +165,12 @@ class _AccountInformationState extends State<AccountInformation> {
                     title: "Confidentialité",
                   ),
                 ),
-                _rowInformationButton(
-                  iconData: Icons.settings,
-                  title: "Paramètres",
+                InkWell(
+                  onTap: () => Get.off(() => HomeScreen()),
+                  child: _rowInformationButton(
+                    iconData: Icons.home,
+                    title: "Accueil",
+                  ),
                 ),
                 Divider(
                   thickness: 1,
@@ -204,8 +201,13 @@ class _AccountInformationState extends State<AccountInformation> {
 
   @override
   void initState() {
-    UserServicesDB().verifyAccountAvailability(
-        id: userController.currentUserModel.value!.id);
+    if (!userController.isAccountValide.value) {
+      if (userController.isSignIn.value) {
+        UserServicesDB().verifyAccountAvailability(
+            id: userController.currentUserModel.value!.id);
+      }
+    }
+
     super.initState();
   }
 

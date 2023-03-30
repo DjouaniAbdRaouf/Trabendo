@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, body_might_complete_normally_nullable, depend_on_referenced_packages, unused_local_variable
 
+import 'dart:ffi';
 import 'dart:io';
 // ignore: library_prefixes
 import 'package:path/path.dart' as Path;
@@ -12,6 +13,8 @@ import 'package:trabendo/models/productModel.dart';
 class ProductServiceDB {
   CollectionReference products =
       FirebaseFirestore.instance.collection("products");
+  CollectionReference favorite =
+      FirebaseFirestore.instance.collection("favorite");
 
   Future<List<ProductsModel>> getAllproducts() async {
     List<ProductsModel> productList = [];
@@ -21,7 +24,7 @@ class ProductServiceDB {
         ProductsModel productsModel = ProductsModel(
             name: results.docs[i]["title"],
             categorie: results.docs[i]["categorie"],
-            subCategorie: results.docs[i]["sous-cat"],
+            subCategorie: "",
             price: results.docs[i]["price"],
             photos: results.docs[i]["photos"].cast<String>(),
             idUser: results.docs[i]["idUser"],
@@ -45,7 +48,7 @@ class ProductServiceDB {
         "title": productsModel.name,
         "desc": productsModel.description,
         "categorie": productsModel.categorie,
-        "sous-cat": productsModel.subCategorie,
+        "sous_cat": "",
         "price": productsModel.price,
         "photos": productsModel.photos,
         "type": productsModel.typeProduct,
@@ -69,7 +72,7 @@ class ProductServiceDB {
         ProductsModel productsModel = ProductsModel(
             name: results.docs[i]["title"],
             categorie: results.docs[i]["categorie"],
-            subCategorie: results.docs[i]["sous-cat"],
+            subCategorie: "",
             price: results.docs[i]["price"],
             photos: results.docs[i]["photos"].cast<String>(),
             idUser: results.docs[i]["idUser"],
@@ -100,5 +103,85 @@ class ProductServiceDB {
       });
     }
     return imagesReferencesProduct;
+  }
+
+  Future<bool> deleteImages({required List<String?> images}) async {
+    try {
+      for (var i = 0; i < images.length; i++) {
+        final desertRef =
+            FirebaseStorage.instance.ref("productsImages").child(images[i]!);
+
+        await desertRef.delete();
+      }
+      return true;
+    } catch (e) {
+      debugPrint("error when deleteing images $e ");
+      return false;
+    }
+  }
+
+  Future<bool> deleteItem({required ProductsModel productsModel}) async {
+    try {
+      var results = await products
+          .where("idUser", isEqualTo: productsModel.idUser)
+          .where("idproduct", isEqualTo: productsModel.idproduct)
+          .get();
+      await deleteImages(images: productsModel.photos);
+      String docId = results.docs.first.id;
+      await products.doc(docId).delete();
+      return true;
+    } catch (e) {
+      debugPrint("error when deleting a product $e");
+      return false;
+    }
+  }
+
+  Future<bool> updateItem(
+      {required String userId,
+      required String productsId,
+      required String name,
+      required double price,
+      required String desc,
+      required bool livraison}) async {
+    try {
+      var results = await products
+          .where("idUser", isEqualTo: userId)
+          .where("idproduct", isEqualTo: productsId)
+          .get();
+      String docId = results.docs.first.id;
+
+      await products.doc(docId).update({
+        "title": name,
+        "price": price,
+        "desc": desc,
+        "livrasionDispo": livraison
+      });
+      return true;
+    } catch (e) {
+      debugPrint("error when deleting a product $e");
+      return false;
+    }
+  }
+
+  Future<bool> addFavouritItem({required ProductsModel productsModel}) async {
+    try {
+      await favorite.add({
+        "idproduct": productsModel.idproduct,
+        "idUser": productsModel.idUser,
+        "title": productsModel.name,
+        "desc": productsModel.description,
+        "categorie": productsModel.categorie,
+        "sous-cat": productsModel.subCategorie,
+        "price": productsModel.price,
+        "photos": productsModel.photos,
+        "type": productsModel.typeProduct,
+        "livrasionDispo": productsModel.livrasionDispo,
+        "Date": DateTime.now()
+      });
+      return true;
+    } catch (errors) {
+      debugPrint("error when adding user $errors");
+      return false;
+    }
   }
 }

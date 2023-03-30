@@ -32,7 +32,6 @@ dependencies:
     sdk: flutter
   google_fonts: ^3.0.1
   curved_navigation_bar: ^1.0.3
-  http: ^0.13.5
   smooth_page_indicator: ^1.0.0+2
   flutter_svg: ^1.1.6
   lottie: ^2.2.0
@@ -60,11 +59,21 @@ dependencies:
   carousel_slider: ^4.2.1
   curved_drawer_fork: ^0.0.1
   chips_choice: ^3.0.0
+  url_launcher: ^6.1.10
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.12.0"
+
+flutter_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/LOGO.png"
+  min_sdk_android: 21 # androi
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

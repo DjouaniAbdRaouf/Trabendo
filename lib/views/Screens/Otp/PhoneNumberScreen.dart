@@ -92,10 +92,12 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                     ),
                     labelText: "Numéro de Téléphone"),
                 initialCountryCode: 'DZ',
-                onChanged: (phone) {},
-                onSubmitted: (p0) {
-                  phoneNumber = "$codeCountry$p0";
+                onChanged: (phone) {
+                  phoneNumber = phone.completeNumber;
                 },
+                // onSubmitted: (p0) {
+                //   phoneNumber = "$codeCountry$p0";
+                // },
                 onCountryChanged: (value) {
                   codeCountry = "+${value.dialCode}";
                 },

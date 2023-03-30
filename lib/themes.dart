@@ -28,7 +28,16 @@ class ImageManager {
   static String beauty = "assets/icons/beauty.png";
   static String health = "assets/icons/health.png";
   static String sports = "assets/icons/sport.png";
+  static String accessories = "assets/icons/accessories.png";
+  static String bebe = "assets/icons/bebe.png";
+  static String suits = "assets/icons/clothes.png";
+  static String cars = "assets/icons/cars.png";
+  static String home = "assets/icons/house.png";
+  static String other = "assets/icons/other.png";
+
   static String avatar = "assets/images/user.png";
+  static String logo = "assets/images/LOGO.png";
+  static String whatsapp = "assets/images/whatsapp.png";
 }
 
 class PaddingManager {

@@ -30,13 +30,25 @@ class UserServicesDB {
     }
   }
 
+  Future<String?> getdataforuser({required String id}) async {
+    var results = await users.where("id", isEqualTo: id).get();
+    if (results.docs.isNotEmpty) {
+      var user = results.docs.first;
+      return user["displayname"];
+    }
+    return null;
+  }
+
   Future<UserModel?> getUserForProduct({required String id}) async {
     var results = await users.where("id", isEqualTo: id).get();
     if (results.docs.isNotEmpty) {
       var user = results.docs.first;
       UserModel userModel = UserModel(
-          password: user["password"],
+          password: "",
           id: user["id"],
+          pays: user["pays"],
+          phone: user["phone"],
+          adresse: user["adresse"],
           displayname: user["displayname"],
           email: user["email"]);
       return userModel;
@@ -50,15 +62,24 @@ class UserServicesDB {
       required String adresse,
       required String displayname}) async {
     var results = await users.where("id", isEqualTo: userModel.id).get();
-    var doc = results.docs.first.id;
-    try {
-      await users.doc(doc).update(
-          {"adresse": adresse, "displayname": displayname, "pays": pays});
-      return true;
-    } catch (e) {
-      debugPrint("error when updating account $e");
-      return false;
+    if (results.docs.isNotEmpty) {
+      var doc = results.docs.first.id;
+      try {
+        await users.doc(doc).update(
+            {"adresse": adresse, "displayname": displayname, "pays": pays});
+        userController.currentUserModel.value!.adresse = adresse;
+        userController.currentUserModel.value!.pays = pays;
+        userController.currentUserModel.value!.displayname = displayname;
+        userController.storeData(userController.currentUserModel.value!);
+        var user = userController.getData();
+
+        return true;
+      } catch (e) {
+        debugPrint("error when updating account $e");
+        return false;
+      }
     }
+    return false;
   }
 
   void changePassword(String password) {
@@ -92,16 +113,49 @@ class UserServicesDB {
     }
   }
 
-  Future<bool> verifyAccountAvailability({required String id}) async {
-    var results = await users.where("id", isEqualTo: id).get();
-    if (results.docs.first["adresse"] == null ||
-        results.docs.first["pays"] == null ||
-        results.docs.first["phone"] == null) {
-      userController.isAccountValide.value = false;
+  Future<bool> getUserData({required String uid}) async {
+    try {
+      var results = await users.where("id", isEqualTo: uid).get();
+      if (results.docs.isNotEmpty) {
+        // userController.currentUserModel.value!.adresse =
+        //     results.docs.first["adresse"] ?? "";
+        // userController.currentUserModel.value!.pays =
+        //     results.docs.first["pays"] ?? "";
+        // userController.currentUserModel.value!.phone =
+        //     results.docs.first["phone"] ?? "";
+        // userController.storeData(userController.currentUserModel.value!);
+        // userController.getData();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("error $e");
       return false;
     }
-    userController.isAccountValide.value = true;
-    return true;
+  }
+
+  Future<bool> verifyAccountAvailability({required String id}) async {
+    var results = await users.where("id", isEqualTo: id).get();
+
+    if (results.docs.isNotEmpty) {
+      if (results.docs.first["adresse"] == "" ||
+          results.docs.first["pays"] == "" ||
+          results.docs.first["phone"] == "") {
+        userController.isAccountValide.value = false;
+        return false;
+      }
+      userController.currentUserModel.value!.adresse =
+          results.docs.first["adresse"];
+      userController.currentUserModel.value!.phone =
+          results.docs.first["phone"];
+      userController.currentUserModel.value!.pays = results.docs.first["pays"];
+
+      userController.storeData(userController.currentUserModel.value!);
+      userController.getData();
+      userController.isAccountValide.value = true;
+      return true;
+    }
+    return false;
   }
 
   Future<bool> resetPassword(UserModel userModel, String newPassword) async {

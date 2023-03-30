@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable, unused_local_variable, unnecessary_null_comparison
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable, unused_local_variable, unnecessary_null_comparison, use_build_context_synchronously
 
 import 'dart:io';
 
@@ -55,13 +55,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  List<String> subCategorie = [
-    "TV",
-    "Téléphone mobile",
-    "Montres",
-    "Smart Watch",
-  ];
-
   List<String> typeProductList = ["CABA", "BLED"];
 
   @override
@@ -99,14 +92,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 SizedBox(
                   height: PaddingManager.kheight,
                 ),
-                getText("Sous-Categorie"),
-                DropDownGest(
-                    ListForMapping: subCategorie,
-                    selectedValue: AddProductScreen.selectedCat,
-                    GetSelected: (v) {
-                      AddProductScreen.subCat = v;
-                    },
-                    textHint: "la sous categorie du produit"),
+                // getText("Sous-Categorie"),
+                // DropDownGest(
+                //     ListForMapping: subCategorie,
+                //     selectedValue: AddProductScreen.selectedCat,
+                //     GetSelected: (v) {
+                //       AddProductScreen.subCat = v;
+                //     },
+                //     textHint: "la sous categorie du produit"),
                 SizedBox(
                   height: PaddingManager.kheight,
                 ),
@@ -134,7 +127,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 SizedBox(
                   height: PaddingManager.kheight,
                 ),
-                Container(
+                SizedBox(
                   height: 200,
                   child: TextFormGest(
                       controller: description,
@@ -160,9 +153,23 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               "Choisir des photos pour votre Produit\nMax = 3",
                               style: TextStyleMnager.petitTextGreyBlack,
                             ),
-                            Text(
-                              "Vous avez choisi = ${images.length}",
-                              style: TextStyleMnager.petitTextGrey,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  "Vous avez choisi = ${images.length}",
+                                  style: TextStyleMnager.petitTextGrey,
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      clearListImages();
+                                    },
+                                    icon: Icon(
+                                      Icons.recycling,
+                                      color: Colors.red,
+                                      size: 34,
+                                    ))
+                              ],
                             ),
                             InkWell(
                               onTap: () async {
@@ -181,6 +188,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           ],
                         ),
                       )),
+                SizedBox(
+                  height: PaddingManager.kheight,
+                ),
+
                 SizedBox(
                   height: PaddingManager.kheight,
                 ),
@@ -207,9 +218,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     ),
                   ],
                 ),
+
                 SizedBox(
                   height: PaddingManager.kheight,
                 ),
+
                 Obx(() => productController.isUplaoding.value
                     ? Center(
                         child: SizedBox(
@@ -236,7 +249,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                       .uploadPhotos(photos: images);
                                   var idproduct = Uuid().v1();
                                   ProductsModel productsModel = ProductsModel(
-                                      name: title.text,
+                                      name: title.text.toLowerCase(),
                                       categorie: AddProductScreen.selectedCat,
                                       subCategorie: AddProductScreen.subCat,
                                       price: double.parse(price.text),
@@ -252,6 +265,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   await ProductServiceDB()
                                       .addProduct(productsModel: productsModel);
                                   productController.addproduct(productsModel);
+
+                                  alertDialog(
+                                      context: context,
+                                      title: "Succès",
+                                      contentType: ContentType.success,
+                                      message: "Annonce publiée");
+                                  title.clear();
+                                  description.clear();
+                                  price.clear();
                                   productController.isUplaoding.value = false;
                                 } else {
                                   productController.isUplaoding.value = false;
@@ -280,6 +302,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
         ),
       ),
     );
+  }
+
+  clearListImages() {
+    setState(() {
+      images.clear();
+    });
   }
 
   chooseImage() async {

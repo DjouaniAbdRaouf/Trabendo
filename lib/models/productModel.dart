@@ -10,7 +10,7 @@ class ProductsModel {
       idUser,
       typeProduct,
       description;
-  final double price;
+  final dynamic price;
   final List<String> photos;
   final DateTime? date;
   final bool livrasionDispo;
@@ -32,7 +32,7 @@ class ProductsModel {
     return ProductsModel(
         name: json["title"],
         categorie: json["categorie"],
-        subCategorie: json["sous-cat"],
+        subCategorie: "",
         price: json["price"],
         photos: json["photos"].cast<String>(),
         idUser: json["idUser"],
@@ -42,17 +42,34 @@ class ProductsModel {
         date: json["Date"].toDate(),
         livrasionDispo: json["livrasionDispo"]);
   }
+  factory ProductsModel.fromMap(Map<String, dynamic> json) {
+    return ProductsModel(
+        name: json["name"],
+        categorie: json["categorie"],
+        subCategorie: "",
+        price: json["price"],
+        photos: json["photos"].cast<String>(),
+        idUser: json["idUser"],
+        idproduct: json["idproduct"],
+        typeProduct: json["type"],
+        description: json["desc"],
+        //   date: json["Date"].toDate(),
+        livrasionDispo: json["livrasionDispo"]);
+  }
 
-  Map<String, dynamic> toJson(ProductsModel productsModel) {
+  Map<String, dynamic> toJson() {
     return {
-      "idproduct": productsModel.idproduct,
-      "idUser": productsModel.idUser,
-      "name": productsModel.name,
-      "categorie": productsModel.categorie,
-      "subcategorie": productsModel.subCategorie,
-      "price": productsModel.idproduct,
-      "photos": productsModel.photos,
-      "type": productsModel.typeProduct,
+      "idproduct": idproduct,
+      "idUser": idUser,
+      "name": name,
+      "desc": description,
+      "categorie": categorie,
+      "subcategorie": subCategorie,
+      "price": price,
+      "photos": photos,
+      //  "Date": productsModel.date,
+      "type": typeProduct,
+      "livrasionDispo": livrasionDispo
     };
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:trabendo/controllers/FilterListController.dart';
 import 'package:trabendo/controllers/allProductControllers.dart';
+import 'package:trabendo/models/CategorieModel.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 import 'package:trabendo/views/widgets/ReusableComponents/FavoriteItem.dart';
@@ -20,12 +21,7 @@ class _FilterScreenState extends State<FilterScreen> {
   FilterController filterController = Get.put(FilterController());
   AllProductController allProductController = Get.put(AllProductController());
   int tag = 0;
-  List<String> options = [
-    'Santé',
-    'Technologies',
-    'Sport',
-    'Beauty',
-  ];
+
   String cat = "Santé";
   double min = 0;
   double max = 10000000;
@@ -72,11 +68,11 @@ class _FilterScreenState extends State<FilterScreen> {
                 onChanged: (val) {
                   setState(() {
                     tag = val;
-                    cat = options[val];
+                    cat = CategorieModel.names[val];
                   });
                 },
                 choiceItems: C2Choice.listFrom<int, String>(
-                  source: options,
+                  source: CategorieModel.names,
                   value: (i, v) => i,
                   label: (i, v) {
                     return v;
@@ -109,6 +105,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   RangeSlider(
                     activeColor: Colors.blueGrey,
                     values: rangeValues,
+                    divisions: 3000,
                     onChanged: (value) {
                       setState(() {
                         max = value.end;

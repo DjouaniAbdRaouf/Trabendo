@@ -8,7 +8,8 @@ import 'package:trabendo/controllers/allProductControllers.dart';
 import 'package:trabendo/models/productModel.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/Screens/AccountInformation.dart';
-import 'package:trabendo/views/widgets/ReusableComponents/ItemCardForList.dart';
+import 'package:trabendo/views/Screens/Home/HomeScreen.dart';
+import 'package:trabendo/views/widgets/ReusableComponents/FavoriteItem.dart';
 
 class StoreByTypeScreen extends StatefulWidget {
   const StoreByTypeScreen({super.key, required this.typecat});
@@ -41,7 +42,9 @@ class _StoreByTypeScreenState extends State<StoreByTypeScreen> {
             child: TextFormField(
               onChanged: (value) {
                 setState(() {
-                  search = value;
+                  print(value.toLowerCase());
+                  textEditingController.text.toLowerCase();
+                  search = value.toLowerCase();
                 });
               },
               controller: textEditingController,
@@ -74,26 +77,6 @@ class _StoreByTypeScreenState extends State<StoreByTypeScreen> {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: InkWell(
-            onTap: () {},
-            child: Container(
-              height: 50,
-              width: 50,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: ColorManager.primaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                Icons.filter_list,
-                color: Colors.white,
-                size: 35,
-              ),
-            ),
-          ),
-        )
       ],
     );
   }
@@ -108,25 +91,22 @@ class _StoreByTypeScreenState extends State<StoreByTypeScreen> {
         foregroundColor: Colors.grey.shade900,
         backgroundColor: Colors.white,
         elevation: 0.0,
-        leading: Icon(
-          Icons.menu,
-          size: 28,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: Image.asset(
+            ImageManager.logo,
+            width: 150,
+            height: 150,
+          ),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () => Get.to(() => AccountInformation()),
-              child: Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.transparent,
-                    image: DecorationImage(
-                        image: AssetImage(ImageManager.avatar),
-                        fit: BoxFit.fill,
-                        filterQuality: FilterQuality.high)),
+              child: Icon(
+                Icons.manage_accounts,
+                size: 35,
               ),
             ),
           ),
@@ -157,7 +137,7 @@ class _StoreByTypeScreenState extends State<StoreByTypeScreen> {
                   ),
                   Spacer(),
                   Text(
-                    "Resultas : ${allProductController.allproductsUserList.where((p0) => p0.typeProduct == widget.typecat).length} produit(s)",
+                    "Resultas: ${allProductController.allproductsUserList.where((p0) => p0.typeProduct == widget.typecat).length} produit(s)",
                     style: TextStyleMnager.petitTextGrey,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -202,10 +182,10 @@ class _StoreByTypeScreenState extends State<StoreByTypeScreen> {
         //     childAspectRatio: 0.8),
         itemBuilder: (BuildContext context, int index) {
           if (search == "") {
-            return CardItemForList(productsModel: filterCategorieList[index]);
+            return FavoriteItem(productsModel: filterCategorieList[index]);
           }
           if (filterCategorieList[index].name.startsWith(search)) {
-            return CardItemForList(productsModel: filterCategorieList[index]);
+            return FavoriteItem(productsModel: filterCategorieList[index]);
           }
           return Text("");
         },
