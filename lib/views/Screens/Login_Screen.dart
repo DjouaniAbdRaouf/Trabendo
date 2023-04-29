@@ -97,15 +97,26 @@ class LoginScreen extends StatelessWidget {
                               labelText: "Mot de Passe"),
                         ),
                       )),
-                  SizedBox(
-                    height: PaddingManager.kheight,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, RouteManager.forgetpassScreen);
+                          },
+                          child: Text(
+                            "Mot de pase oublié ?",
+                            style: TextStyleMnager.petitTextGrey,
+                          ))
+                    ],
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ColorManager.primaryColor,
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(5),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                           elevation: 0.0,
@@ -136,7 +147,7 @@ class LoginScreen extends StatelessWidget {
                                   );
                                   UserServicesDB().verifyAccountAvailability(
                                       id: userCredential.user!.uid);
-                                  userController.storeData(userModel);
+                                  await userController.storeData(userModel);
                                   userController.getData();
                                   Get.to(() => HomeScreen());
                                   alertDialog(
@@ -213,8 +224,6 @@ class LoginScreen extends StatelessWidget {
                               ),
                               onPressed: () {
                                 AuthServices().signInWithGoogle(context);
-
-                                Get.to(() => HomeScreen());
                               },
                               icon: SvgPicture.asset(
                                 ImageManager.googleIcons,

@@ -127,7 +127,7 @@ class _FilterScreenState extends State<FilterScreen> {
               ),
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 30,
                 child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.all(8),

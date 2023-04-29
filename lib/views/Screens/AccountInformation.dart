@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
@@ -10,7 +9,6 @@ import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/Screens/Home/HomeScreen.dart';
 import 'package:trabendo/views/Screens/Home/MyProducts.dart';
-import 'package:trabendo/views/Screens/Login_Screen.dart';
 import 'package:trabendo/views/Screens/Otp/PhoneNumberScreen.dart';
 import 'package:trabendo/views/Screens/productsScreens/addProduct.dart';
 import 'package:trabendo/views/Screens/profileScreen.dart';
@@ -191,6 +189,7 @@ class _AccountInformationState extends State<AccountInformation> {
                     title: "Deconnecter",
                   ),
                 ),
+              
               ],
             ),
           ),

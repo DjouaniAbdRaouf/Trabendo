@@ -47,7 +47,7 @@ class UserController extends GetxController {
     return true;
   }
 
-  void storeData(UserModel userModel) async {
+  Future<void> storeData(UserModel userModel) async {
     String userdata = jsonEncode(userModel);
     isSignIn.value = true;
     await sharedPreferences.setString("userdata", userdata);

@@ -3,11 +3,13 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:trabendo/controllers/profileController.dart';
 import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/themes.dart';
 import 'package:trabendo/views/Screens/AccountInformation.dart';
+import 'package:trabendo/views/Screens/Otp/PhoneNumberScreen.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 import 'package:trabendo/views/widgets/DialogWidget.dart';
 import 'package:trabendo/views/widgets/TextFormFieldGest.dart';
@@ -80,7 +82,6 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    //TODO GET  DATA FROM FIREBASE
                     !userController.isAccountValide.value
                         ? Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -130,6 +131,69 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       height: PaddingManager.kheight,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Téléphone :",
+                          style: TextStyleMnager.petitTextGreyBlack,
+                        ),
+                        SizedBox(
+                          width: PaddingManager.kheight / 2,
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: PaddingManager.kheight / 2,
+                              vertical: PaddingManager.kheight / 2),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: ColorManager.primaryColor),
+                          child: phone.text.isNotEmpty
+                              ? Text(
+                                  phone.text,
+                                  style: TextStyleMnager.petitTextWithe,
+                                )
+                              : InkWell(
+                                  onTap: () =>
+                                      Get.to(() => PhoneNumberScreen()),
+                                  child: Text(
+                                    "Ajouter numéro de téléphone",
+                                    style: TextStyleMnager.petitTextWithe,
+                                  )),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: PaddingManager.kheight,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Email :",
+                          style: TextStyleMnager.petitTextGreyBlack,
+                        ),
+                        SizedBox(
+                          width: PaddingManager.kheight / 2,
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: PaddingManager.kheight / 2,
+                              vertical: PaddingManager.kheight / 2),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: ColorManager.primaryColor),
+                          child: Text(
+                            email.text,
+                            style: TextStyleMnager.petitTextWithe,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: PaddingManager.kheight,
+                    ),
+
                     TextFormGest(
                       colorFill: !profileController.edit.value
                           ? Colors.grey.shade100
@@ -141,36 +205,32 @@ class ProfileScreen extends StatelessWidget {
                       icon: Icons.person,
                       coloprefix: ColorManager.primaryColor,
                     ),
-                    SizedBox(
-                      height: PaddingManager.kheight,
-                    ),
-                    TextFormGest(
-                      colorFill: !profileController.edit.value
-                          ? Colors.grey.shade100
-                          : Colors.grey.shade200,
-                      controller: email,
-                      errormessage: "",
-                      hinttext: "Email",
-                      icon: Icons.email,
-                      readOnly: true,
-                      suffixIcon: Icons.lock_outline,
-                      coloprefix: ColorManager.primaryColor,
-                    ),
-                    SizedBox(
-                      height: PaddingManager.kheight,
-                    ),
-                    TextFormGest(
-                      colorFill: !profileController.edit.value
-                          ? Colors.grey.shade100
-                          : Colors.grey.shade200,
-                      controller: phone,
-                      errormessage: "",
-                      hinttext: "Téléphone",
-                      icon: Icons.person,
-                      readOnly: true,
-                      suffixIcon: Icons.lock_outline,
-                      coloprefix: ColorManager.primaryColor,
-                    ),
+
+                    // TextFormGest(
+                    //   colorFill: !profileController.edit.value
+                    //       ? Colors.grey.shade100
+                    //       : Colors.grey.shade200,
+                    //   controller: email,
+                    //   errormessage: "",
+                    //   hinttext: "Email",
+                    //   icon: Icons.email,
+                    //   readOnly: true,
+                    //   suffixIcon: Icons.lock_outline,
+                    //   coloprefix: ColorManager.primaryColor,
+                    // ),
+
+                    // TextFormGest(
+                    //   colorFill: !profileController.edit.value
+                    //       ? Colors.grey.shade100
+                    //       : Colors.grey.shade200,
+                    //   controller: phone,
+                    //   errormessage: "",
+                    //   hinttext: "Téléphone",
+                    //   icon: Icons.person,
+                    //   readOnly: true,
+                    //   suffixIcon: Icons.lock_outline,
+                    //   coloprefix: ColorManager.primaryColor,
+                    // ),
                     SizedBox(
                       height: PaddingManager.kheight,
                     ),
@@ -202,42 +262,64 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       height: PaddingManager.kheight,
                     ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorManager.primaryColor,
-                        ),
-                        onPressed: () async {
-                          if (globalKey.currentState!.validate()) {
-                            if (await UserServicesDB().updateAccount(
-                                userModel:
-                                    userController.currentUserModel.value!,
-                                pays: pays.text,
-                                adresse: adresse.text,
-                                displayname: displayname.text)) {
-                              alertDialog(
-                                  context: context,
-                                  title: "Succès",
-                                  contentType: ContentType.success,
-                                  message: "Votre compte Trabendo Activé");
-                              Get.off(() => AccountInformation());
-                              userController.isAccountValide.value = true;
-                            } else {
-                              alertDialog(
-                                  context: context,
-                                  title: "Alert",
-                                  contentType: ContentType.failure,
-                                  message: "Problème d'activation");
-                            }
-                          }
-                        },
-                        child: Text(
-                          "Sauvgarder",
-                          style: TextStyleMnager.petitTextWithe,
-                        ),
-                      ),
-                    )
+                    Obx(() => profileController.isloading.value
+                        ? Center(
+                            child: Center(
+                              child: SizedBox(
+                                height: 150,
+                                width: 150,
+                                child: LottieBuilder.asset(
+                                    ImageManager.loadingLottie),
+                              ),
+                            ),
+                          )
+                        : Align(
+                            alignment: Alignment.bottomRight,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: ColorManager.primaryColor,
+                              ),
+                              onPressed: () async {
+                                if (globalKey.currentState!.validate()) {
+                                  profileController.isloading(true);
+                                  if (await UserServicesDB().updateAccount(
+                                      userModel: userController
+                                          .currentUserModel.value!,
+                                      pays: pays.text,
+                                      adresse: adresse.text,
+                                      displayname: displayname.text)) {
+                                    var varifyResult = await UserServicesDB()
+                                        .verifyAccountAvailability(
+                                            id: userController
+                                                .currentUserModel.value!.id);
+                                    if (varifyResult) {
+                                      userController.isAccountValide(true);
+                                    }
+                                    profileController.isloading(false);
+
+                                    alertDialog(
+                                        context: context,
+                                        title: "Succès",
+                                        contentType: ContentType.success,
+                                        message: "Modifications Sauvgardées");
+                                    Get.offAll(() => AccountInformation());
+                                  } else {
+                                    profileController.isloading(false);
+
+                                    alertDialog(
+                                        context: context,
+                                        title: "Alert",
+                                        contentType: ContentType.failure,
+                                        message: "Problème de connexion");
+                                  }
+                                }
+                              },
+                              child: Text(
+                                "Sauvgarder",
+                                style: TextStyleMnager.petitTextWithe,
+                              ),
+                            ),
+                          ))
                   ],
                 ),
               ),

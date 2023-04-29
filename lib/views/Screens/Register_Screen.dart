@@ -11,6 +11,7 @@ import 'package:trabendo/services/AuthServices.dart';
 import 'package:trabendo/services/routes.dart';
 import 'package:trabendo/services/userservicesDB.dart';
 import 'package:trabendo/themes.dart';
+import 'package:trabendo/views/Screens/Home/HomeScreen.dart';
 import 'package:trabendo/views/widgets/AppBarWidget.dart';
 import 'package:trabendo/views/widgets/DialogWidget.dart';
 import 'package:trabendo/views/widgets/TextFormFieldGest.dart';
@@ -126,6 +127,8 @@ class RegisterScreen extends StatelessWidget {
                           validator: (val) {
                             if (val == "") {
                               return "Champ Obligatoire";
+                            } else if (val!.length <= 8) {
+                              return "Mot de passe doit ètre au moins 8 caractères";
                             }
                           },
                           obscureText: authController.isloadingSignup.value,
@@ -173,16 +176,19 @@ class RegisterScreen extends StatelessWidget {
                             if (userCredential != null) {
                               UserModel userModel = UserModel(
                                   id: userCredential.user!.uid,
-                                  password: password.text,
+                                  password: password.text.trim(),
                                   displayname: username.text,
                                   pays: "",
                                   adresse: "",
                                   phone: "",
-                                  email: email.text);
+                                  email: email.text.trim());
                               if (await UserServicesDB()
                                   .addUser(userModel: userModel)) {
-                                userController.storeData(userModel);
+                                await userController.storeData(userModel);
                                 userController.getData();
+                                await UserServicesDB()
+                                    .verifyAccountAvailability(
+                                        id: userModel.id);
                                 alertDialog(
                                     context: context,
                                     contentType: ContentType.success,
@@ -191,8 +197,7 @@ class RegisterScreen extends StatelessWidget {
                                         "vous pouvez maintenant confimer l'inscription par numero de telephone");
                                 authController.isloadingSignup.value = false;
 
-                                Navigator.pushReplacementNamed(
-                                    context, RouteManager.homeScreen);
+                                Get.offAll(() => HomeScreen());
                               }
                             } else {
                               authController.isloadingSignup.value = false;
@@ -200,7 +205,7 @@ class RegisterScreen extends StatelessWidget {
                               alertDialog(
                                   context: context,
                                   contentType: ContentType.failure,
-                                  title: "Problème d'inscription",
+                                  title: "Verifiez vos données",
                                   message: "reésseyé autre fois");
                             }
                           }
@@ -263,7 +268,9 @@ class RegisterScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(15)),
                                 elevation: 0.0,
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                AuthServices().signInWithGoogle(context);
+                              },
                               icon: SvgPicture.asset(
                                 ImageManager.googleIcons,
                                 height: 25,

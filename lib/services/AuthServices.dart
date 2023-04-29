@@ -36,7 +36,6 @@ class AuthServices {
 
       var userCredential =
           await FirebaseAuth.instance.signInWithCredential(credantial);
-      print("*-*-*-*-*-*-*-*-*");
       UserModel userModel = UserModel(
           id: userCredential.user!.uid,
           email: userCredential.user!.email!,
@@ -46,8 +45,9 @@ class AuthServices {
           adresse: "",
           displayname: userCredential.user!.displayName!);
       UserServicesDB().verifyAccountAvailability(id: userCredential.user!.uid);
-      userController.storeData(userModel);
+      await userController.storeData(userModel);
       userController.getData();
+      Get.offAll(() => HomeScreen());
       if (!await UserServicesDB().getUserData(uid: userCredential.user!.uid)) {
         print("added to firestore");
         await UserServicesDB().addUser(userModel: userModel);

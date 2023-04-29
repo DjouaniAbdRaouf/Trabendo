@@ -2,7 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:trabendo/controllers/userController.dart';
 import 'package:trabendo/models/user_model.dart';
@@ -10,6 +10,38 @@ import 'package:trabendo/models/user_model.dart';
 class UserServicesDB {
   CollectionReference users = FirebaseFirestore.instance.collection("users");
   UserController userController = Get.put(UserController());
+
+  Future<bool> ResetPassword(
+      {required String email, required BuildContext context}) async {
+    try {
+      if (await verifiEmailInFirestore(email: email, context: context)) {
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        return true;
+      }
+
+      return false;
+    } on FirebaseException catch (e) {
+      debugPrint("error when reseting password $e");
+      return false;
+    }
+  }
+
+  Future<bool> verifiEmailInFirestore(
+      {required String email, required BuildContext context}) async {
+    try {
+      var results = await users.where("email", isEqualTo: email).get();
+      if (results.docs.isEmpty) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Email non Valide ")));
+        return false;
+      } else {
+        return true;
+      }
+    } catch (e) {
+      debugPrint("error when testing email $e");
+      return false;
+    }
+  }
 
   Future<bool> addUser({required UserModel userModel}) async {
     try {
@@ -117,14 +149,6 @@ class UserServicesDB {
     try {
       var results = await users.where("id", isEqualTo: uid).get();
       if (results.docs.isNotEmpty) {
-        // userController.currentUserModel.value!.adresse =
-        //     results.docs.first["adresse"] ?? "";
-        // userController.currentUserModel.value!.pays =
-        //     results.docs.first["pays"] ?? "";
-        // userController.currentUserModel.value!.phone =
-        //     results.docs.first["phone"] ?? "";
-        // userController.storeData(userController.currentUserModel.value!);
-        // userController.getData();
         return true;
       }
       return false;
@@ -143,17 +167,19 @@ class UserServicesDB {
           results.docs.first["phone"] == "") {
         userController.isAccountValide.value = false;
         return false;
-      }
-      userController.currentUserModel.value!.adresse =
-          results.docs.first["adresse"];
-      userController.currentUserModel.value!.phone =
-          results.docs.first["phone"];
-      userController.currentUserModel.value!.pays = results.docs.first["pays"];
+      } else {
+        userController.currentUserModel.value!.adresse =
+            results.docs.first["adresse"];
+        userController.currentUserModel.value!.phone =
+            results.docs.first["phone"];
+        userController.currentUserModel.value!.pays =
+            results.docs.first["pays"];
 
-      userController.storeData(userController.currentUserModel.value!);
-      userController.getData();
-      userController.isAccountValide.value = true;
-      return true;
+        userController.storeData(userController.currentUserModel.value!);
+        userController.getData();
+        userController.isAccountValide.value = true;
+        return true;
+      }
     }
     return false;
   }

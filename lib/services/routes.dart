@@ -5,6 +5,7 @@ import 'package:trabendo/views/Screens/OnboardingScreen.dart';
 import 'package:trabendo/views/Screens/Otp/PhoneNumberScreen.dart';
 import 'package:trabendo/views/Screens/Register_Screen.dart';
 import 'package:trabendo/views/Screens/Splash_Screen.dart';
+import 'package:trabendo/views/Screens/forget_password.dart';
 
 class RouteManager {
   static const String splashScreen = "/";
@@ -15,6 +16,7 @@ class RouteManager {
   static const String phoneVerification = "/phoneVerification";
   static const String homeScreen = "/home";
   static const String details = "/details";
+  static const String forgetpassScreen = "/forgetPassword";
 
   static Route<dynamic> routemanager(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -31,6 +33,8 @@ class RouteManager {
       case RouteManager.phoneVerification:
       case RouteManager.homeScreen:
         return MaterialPageRoute(builder: (_) => const BottomNavBar());
+      case RouteManager.forgetpassScreen:
+        return MaterialPageRoute(builder: (_) => ForgetPassword());
 
       default:
     }

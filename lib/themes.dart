@@ -22,6 +22,7 @@ class ImageManager {
   static String resetPassword = "assets/Lottie/resetPassword.json";
   static String pickphotos = "assets/Lottie/pickphotos.json";
   static String empty = "assets/Lottie/empty.json";
+  static String forgetPass = "assets/Lottie/forgetpass.json";
 
   static String horligneprofile = "assets/Lottie/horligneprofile.json";
   static String technology = "assets/icons/technology.png";

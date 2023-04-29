@@ -168,7 +168,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                       style: TextStyleMnager.petitTextGrey,
                       children: <TextSpan>[
                         TextSpan(
-                            text: "Re-envoyé le Code",
+                            text: "Re-envoyer le Code",
                             style: TextStyleMnager.petitTextPrimary)
                       ]),
                 ),
@@ -224,7 +224,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
           .then((value) async {
         if (value.user != null) {
           await UserServicesDB().addPhoneNumber(widget.phoneNumber);
-          Get.off(() => ProfileScreen());
+          Get.offAll(() => ProfileScreen());
           alertDialog(
               context: context,
               title: "Succès",
@@ -258,7 +258,7 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
             contentType: ContentType.failure,
             message: "Verification Complete");
         await FirebaseAuth.instance.signInWithCredential(credential);
-        Get.to(() => const AddProductScreen());
+        Get.offAll(() => const AddProductScreen());
       },
       verificationFailed: (FirebaseAuthException e) {
         if (e.code == 'invalid-phone-number') {
